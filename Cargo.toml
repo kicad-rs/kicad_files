@@ -1,0 +1,23 @@
+# -*- eval: (cargo-minor-mode 1) -*-
+
+[package]
+name = "kicad_files"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+license = "Apache-2.0 OR LGPL-3.0"
+description = "KiCAD v6 File Formats"
+categories = ["encoding"]
+keywords = ["s-expression", "s-expr", "kicad", "serde", "serialization"]
+
+repository = "https://github.com/kicad-rs/kicad_files"
+
+[dependencies]
+paste = "1.0"
+serde = { version = "1.0.132", features = ["derive"] }
+serde_sexpr = { git = "https://github.com/kicad-rs/serde_sexpr" }
+thiserror = "1.0"
+
+[dev-dependencies]
+pretty_assertions = "1.0"

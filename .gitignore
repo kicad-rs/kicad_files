@@ -1,0 +1,16 @@
+# rust/cargo
+/Cargo.lock
+/target
+**/*.rs.bk
+
+# emacs
+*~
+\#*
+.#*
+
+# tarpaulin
+cobertura.xml
+tarpaulin-report.*
+
+# output from `cargo tree >tree`
+/tree
