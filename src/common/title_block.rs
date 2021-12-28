@@ -1,3 +1,4 @@
+use crate::internal::option_tuple;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -8,43 +9,19 @@ pub struct TitleBlockComment {
 	pub comment: String
 }
 
-mod tuple {
-	use serde::{Deserializer, Serializer};
-
-	pub(super) fn deserialize<'de, D>(
-		deserializer: D
-	) -> Result<Option<String>, D::Error>
-	where
-		D: Deserializer<'de>
-	{
-		serde_sexpr::Option::deserialize(deserializer)
-			.map(|t: Option<(String,)>| t.map(|t| t.0))
-	}
-
-	pub(super) fn serialize<S>(
-		this: &Option<String>,
-		serializer: S
-	) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer
-	{
-		serde_sexpr::Option::serialize(&this.as_deref().map(|t| (t,)), serializer)
-	}
-}
-
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "title_block")]
 pub struct TitleBlock {
-	#[serde(with = "tuple")]
+	#[serde(with = "option_tuple")]
 	pub title: Option<String>,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "option_tuple")]
 	pub date: Option<String>,
 
-	#[serde(rename = "rev", with = "tuple")]
+	#[serde(rename = "rev", with = "option_tuple")]
 	pub revision: Option<String>,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "option_tuple")]
 	pub company: Option<String>,
 
 	#[serde(default, rename = "")]

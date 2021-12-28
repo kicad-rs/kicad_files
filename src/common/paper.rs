@@ -1,4 +1,4 @@
-use crate::mm;
+use crate::{internal::UnitVariant, mm};
 use serde::{
 	de::Error as _,
 	ser::{Serialize, SerializeStruct, Serializer},
@@ -105,17 +105,6 @@ impl<'de> Deserialize<'de> for Paper {
 	}
 }
 
-struct PaperSizeDef(u32, &'static str);
-
-impl Serialize for PaperSizeDef {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer
-	{
-		serializer.serialize_unit_variant("PaperSize", self.0, self.1)
-	}
-}
-
 impl Serialize for Paper {
 	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
 	where
@@ -144,7 +133,7 @@ impl Serialize for Paper {
 		};
 
 		let mut sexpr = serializer.serialize_struct("paper", 2)?;
-		sexpr.serialize_field("size", &PaperSizeDef(size.0, size.1))?;
+		sexpr.serialize_field("size", &UnitVariant("PaperSize", size.0, size.1))?;
 		sexpr.serialize_field("portrait", &self.portrait)?;
 		sexpr.end()
 	}
