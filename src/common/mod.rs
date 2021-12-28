@@ -10,6 +10,7 @@ mod paper;
 mod point;
 mod point_list;
 mod position;
+mod title_block;
 
 pub use effects::Effects;
 pub use font::{Font, FontSize};
@@ -18,3 +19,4 @@ pub use paper::{Paper, PaperSize};
 pub use point::Point;
 pub use point_list::PointList;
 pub use position::Position;
+pub use title_block::TitleBlock;
