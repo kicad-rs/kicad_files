@@ -235,7 +235,7 @@ mod tests {
 		input: "(justify right top mirror)",
 		value: Justify::new(JustifyHoriz::Right, JustifyVert::Top, true)
 	}
-	//
+
 	sexpr_test_case! {
 		name: justify_left_bottom,
 		input: "(justify left bottom)",
