@@ -1,7 +1,7 @@
 use crate::mm;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "size")]
 pub struct FontSize {
 	pub height: mm,
@@ -44,7 +44,7 @@ mod thickness {
 	}
 }
 
-#[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "font")]
 pub struct Font {
 	pub size: FontSize,

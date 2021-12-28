@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 /// This struct does not derive [`PartialEq`] because structurally, -90° and 270°
 /// are different, but semantically they are the same.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields, rename = "at")]
 pub struct Position {
 	pub x: mm,

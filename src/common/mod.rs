@@ -6,6 +6,7 @@
 mod effects;
 mod font;
 mod justify;
+mod paper;
 mod point;
 mod point_list;
 mod position;
@@ -13,6 +14,7 @@ mod position;
 pub use effects::Effects;
 pub use font::{Font, FontSize};
 pub use justify::{Justify, JustifyHoriz, JustifyVert};
+pub use paper::{Paper, PaperSize};
 pub use point::Point;
 pub use point_list::PointList;
 pub use position::Position;

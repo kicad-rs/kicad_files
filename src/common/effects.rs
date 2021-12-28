@@ -12,7 +12,7 @@ fn justify_is_default(justify: &Justify) -> bool {
 	*justify == Justify::default()
 }
 
-#[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "effects")]
 pub struct Effects {
 	pub font: Font,
