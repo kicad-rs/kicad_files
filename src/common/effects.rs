@@ -29,7 +29,7 @@ pub struct Effects {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::{sexpr_test_case, Unit};
+	use crate::{common::JustifyVert, sexpr_test_case, Unit};
 
 	sexpr_test_case! {
 		name: effects_simple,
@@ -38,6 +38,36 @@ mod tests {
 			font: Font::new(1.27.mm()),
 			justify: Justify::default(),
 			hide: false
+		}
+	}
+
+	sexpr_test_case! {
+		name: effects_hide,
+		input: "(effects (font (size 1.27 1.27)) hide)",
+		value: Effects {
+			font: Font::new(1.27.mm()),
+			justify: Justify::default(),
+			hide: true
+		}
+	}
+
+	sexpr_test_case! {
+		name: effects_justify,
+		input: "(effects (font (size 1.27 1.27)) (justify bottom))",
+		value: Effects {
+			font: Font::new(1.27.mm()),
+			justify: Justify::new(Default::default(), JustifyVert::Bottom, false),
+			hide: false
+		}
+	}
+
+	sexpr_test_case! {
+		name: effects_justify_hide,
+		input: "(effects (font (size 1.27 1.27)) (justify bottom) hide)",
+		value: Effects {
+			font: Font::new(1.27.mm()),
+			justify: Justify::new(Default::default(), JustifyVert::Bottom, false),
+			hide: true
 		}
 	}
 }
