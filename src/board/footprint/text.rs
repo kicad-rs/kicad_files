@@ -7,14 +7,14 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(rename = "snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum TextType {
 	Reference,
 	Value,
 	User
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "fp_text")]
 pub struct Text {
 	pub ty: TextType,
@@ -39,20 +39,21 @@ pub struct Text {
 
 #[cfg(test)]
 mod tests {
-	/*
 	use super::*;
-	use crate::{sexpr_test_case, Unit, common::{Font, FontSize}};
+	use crate::{common::Font, sexpr_test_case, Unit};
 
 	sexpr_test_case! {
 		name: text,
-		input: r#"(fp_text reference "REF**" (at 0 0) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))) (tstamp 00000000-0000-0000-0000-000000000000))"#,
+		input: r#"(fp_text reference "REF**" (at 0 0) (layer "F.SilkS") (effects (font (size 1 1))) (tstamp "00000000-0000-0000-0000-000000000000"))"#,
 		value: Text {
 			ty: TextType::Reference,
 			text: "REF**".to_owned(),
 			position: Position::new(0.0.mm(), 0.0.mm()),
+			unlocked: false,
 			layer: Layer::new("F.SilkS"),
-			effects: Effects::new(Font::new(1.0.mm()))
+			hide: false,
+			effects: Effects::new(Font::new(1.0.mm())),
+			tstamp: Uuid::nil()
 		}
 	}
-	*/
 }

@@ -8,9 +8,11 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 mod attributes;
+mod line;
 mod text;
 
 pub use attributes::{Attributes, FootprintType};
+pub use line::Line;
 pub use text::Text;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
