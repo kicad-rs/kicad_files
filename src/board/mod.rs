@@ -4,13 +4,11 @@
 //! printed circuit board file formats.
 
 mod connect_pads;
-mod footprint;
-mod footprint_attributes;
+pub mod footprint;
 mod layer;
 mod timestamp;
 
 pub use connect_pads::ConnectPads;
 pub use footprint::Footprint;
-pub use footprint_attributes::{FootprintAttributes, FootprintType};
 pub use layer::Layer;
 pub use timestamp::Timestamp;

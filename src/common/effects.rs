@@ -26,6 +26,16 @@ pub struct Effects {
 	pub hide: bool
 }
 
+impl Effects {
+	pub fn new(font: Font) -> Self {
+		Self {
+			font,
+			justify: Justify::default(),
+			hide: false
+		}
+	}
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -34,11 +44,7 @@ mod tests {
 	sexpr_test_case! {
 		name: effects_simple,
 		input: "(effects (font (size 1.27 1.27)))",
-		value: Effects {
-			font: Font::new(1.27.mm()),
-			justify: Justify::default(),
-			hide: false
-		}
+		value: Effects::new(Font::new(1.27.mm()))
 	}
 
 	sexpr_test_case! {

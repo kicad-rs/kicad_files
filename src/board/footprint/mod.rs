@@ -1,4 +1,4 @@
-use super::{ConnectPads, FootprintAttributes, Layer, Timestamp};
+use super::{ConnectPads, Layer, Timestamp};
 use crate::{
 	common::Position,
 	internal::{option_tuple, tuple},
@@ -6,6 +6,12 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+
+mod attributes;
+mod text;
+
+pub use attributes::{Attributes, FootprintType};
+pub use text::Text;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields, rename = "footprint")]
@@ -96,5 +102,5 @@ pub struct Footprint {
 	thermal_gap: Option<mm>,
 
 	/// Defines the attributes of the footprint.
-	attr: FootprintAttributes
+	attr: Attributes
 }

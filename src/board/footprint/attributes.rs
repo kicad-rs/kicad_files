@@ -9,7 +9,7 @@ pub enum FootprintType {
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "attr")]
-pub struct FootprintAttributes {
+pub struct Attributes {
 	/// Defines the type of footprint.
 	pub ty: FootprintType,
 
@@ -26,7 +26,7 @@ pub struct FootprintAttributes {
 	pub exclude_from_bom: bool
 }
 
-impl FootprintAttributes {
+impl Attributes {
 	pub const fn new(ty: FootprintType) -> Self {
 		Self {
 			ty,
@@ -45,19 +45,19 @@ mod tests {
 	sexpr_test_case! {
 		name: smd,
 		input: "(attr smd)",
-		value: FootprintAttributes::new(FootprintType::Smd)
+		value: Attributes::new(FootprintType::Smd)
 	}
 
 	sexpr_test_case! {
 		name: through_hole,
 		input: "(attr through_hole)",
-		value: FootprintAttributes::new(FootprintType::ThroughHole)
+		value: Attributes::new(FootprintType::ThroughHole)
 	}
 
 	sexpr_test_case! {
 		name: board_only,
 		input: "(attr smd board_only)",
-		value: FootprintAttributes {
+		value: Attributes {
 			ty: FootprintType::Smd,
 			board_only: true,
 			exclude_from_pos_list: false,
@@ -68,7 +68,7 @@ mod tests {
 	sexpr_test_case! {
 		name: exclude_from_pos_list,
 		input: "(attr smd exclude_from_pos_list)",
-		value: FootprintAttributes {
+		value: Attributes {
 			ty: FootprintType::Smd,
 			board_only: false,
 			exclude_from_pos_list: true,
@@ -79,7 +79,7 @@ mod tests {
 	sexpr_test_case! {
 		name: exclude_from_bom,
 		input: "(attr smd exclude_from_bom)",
-		value: FootprintAttributes {
+		value: Attributes {
 			ty: FootprintType::Smd,
 			board_only: false,
 			exclude_from_pos_list: false,
