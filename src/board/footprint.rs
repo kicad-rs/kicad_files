@@ -1,4 +1,4 @@
-use super::{ConnectPads, Layer, Timestamp};
+use super::{ConnectPads, FootprintAttributes, Layer, Timestamp};
 use crate::{
 	common::Position,
 	internal::{option_tuple, tuple},
@@ -83,6 +83,18 @@ pub struct Footprint {
 	/// Defines how all pads are connected to filled zone.
 	#[serde(with = "option_tuple")]
 	zone_connect: Option<ConnectPads>,
-	
-	// TODO thermal_width, ...
+
+	/// Defined the thermal relief spoke width used for zone connections for all
+	/// pads in the footprint. This only affects pads connected to zones with
+	/// thermal reliefs.
+	#[serde(with = "option_tuple")]
+	thermal_width: Option<mm>,
+
+	/// Defines the distance from the pad to the zone of thermal relief connections
+	/// for all pads in the footprint.
+	#[serde(with = "option_tuple")]
+	thermal_gap: Option<mm>,
+
+	/// Defines the attributes of the footprint.
+	attr: FootprintAttributes
 }
