@@ -185,5 +185,5 @@ macro_rules! rename {
 }
 
 rename! {
-	start end
+	start end center mid
 }

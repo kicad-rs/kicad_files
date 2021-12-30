@@ -7,12 +7,24 @@ use crate::{
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+mod arc;
 mod attributes;
+mod circle;
+mod curve;
+mod fill_type;
 mod line;
+mod poly;
+mod rect;
 mod text;
 
+pub use arc::Arc;
 pub use attributes::{Attributes, FootprintType};
+pub use circle::Circle;
+pub use curve::Curve;
+pub use fill_type::FillType;
 pub use line::Line;
+pub use poly::Polygon;
+pub use rect::Rectangle;
 pub use text::Text;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
