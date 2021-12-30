@@ -154,11 +154,14 @@ where
 macro_rules! rename {
 	($($name:ident)+) => {
 		$(
+			#[allow(dead_code)]
 			pub(crate) mod $name {
 				use super::{RenamingDeserializer, RenamingSerializer};
 				use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-				pub(crate) fn deserialize<'de, D, T>(deserializer: D) -> Result<T, D::Error>
+				pub(crate) fn deserialize<'de, D, T>(
+					deserializer: D
+				) -> Result<T, D::Error>
 				where
 					D: Deserializer<'de>,
 					T: Deserialize<'de>
@@ -169,7 +172,9 @@ macro_rules! rename {
 					})
 				}
 
-				pub(crate) fn serialize<S, T>(this: &T, serializer: S) -> Result<S::Ok, S::Error>
+				pub(crate) fn serialize<S, T>(
+					this: &T, serializer: S
+				) -> Result<S::Ok, S::Error>
 				where
 					S: Serializer,
 					T: Serialize
@@ -181,9 +186,47 @@ macro_rules! rename {
 				}
 			}
 		)+
+
+		pub(crate) mod option {
+			use super::{RenamingDeserializer, RenamingSerializer};
+
+			$(
+				#[allow(dead_code)]
+				pub(crate) mod $name {
+					use super::*;
+					use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+					pub(crate) fn deserialize<'de, D, T>(
+						deserializer: D
+					) -> Result<Option<T>, D::Error>
+					where
+						D: Deserializer<'de>,
+						T: Deserialize<'de>
+					{
+						serde_sexpr::Option::deserialize(RenamingDeserializer {
+							de: deserializer,
+							rename: stringify!($name)
+						})
+					}
+
+					pub(crate) fn serialize<S, T>(
+						this: &Option<T>, serializer: S
+					) -> Result<S::Ok, S::Error>
+					where
+						S: Serializer,
+						T: Serialize
+					{
+						serde_sexpr::Option::serialize(this, RenamingSerializer {
+							ser: serializer,
+							rename: stringify!($name)
+						})
+					}
+				}
+			)+
+		}
 	};
 }
 
 rename! {
-	start end center mid
+	start end center mid offset
 }

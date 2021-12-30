@@ -13,6 +13,7 @@ mod circle;
 mod curve;
 mod fill_type;
 mod line;
+mod pad;
 mod poly;
 mod rect;
 mod text;
@@ -23,6 +24,10 @@ pub use circle::Circle;
 pub use curve::Curve;
 pub use fill_type::FillType;
 pub use line::Line;
+pub use pad::{
+	Pad, PadAnchor, PadClearanceType, PadDrill, PadOptions, PadShape, PadSize,
+	PadType
+};
 pub use poly::Polygon;
 pub use rect::Rectangle;
 pub use text::Text;
@@ -74,47 +79,47 @@ pub struct Footprint {
 	/// tool. Valid values are integers 1 through 10. This only applies to
 	/// footprints defined in the board file format.
 	#[serde(with = "option_tuple")]
-	autoplace_cost90: Option<u8>,
+	pub autoplace_cost90: Option<u8>,
 
 	/// Defines the horizontal cost of when using the automatic footprint placement
 	/// tool. Valid values are integers 1 through 10. This only applies to
 	/// footprints defined in the board file format.
 	#[serde(with = "option_tuple")]
-	autoplace_cost180: Option<u8>,
+	pub autoplace_cost180: Option<u8>,
 
 	/// Defines the solder mask distance from all pads in the footprint.
 	#[serde(with = "option_tuple")]
-	solder_mask_margin: Option<mm>,
+	pub solder_mask_margin: Option<mm>,
 
 	/// Defines the solder paste distance from all pads in the footprint.
 	#[serde(with = "option_tuple")]
-	solder_paste_margin: Option<mm>,
+	pub solder_paste_margin: Option<mm>,
 
 	/// Defines the percentage of the pad size used to define the solder paste for
 	/// all pads in the footprint.
 	#[serde(with = "option_tuple")]
-	solder_paste_ration: Option<f32>,
+	pub solder_paste_ration: Option<f32>,
 
 	/// Defines the clearance to all board copper objects for all pads in the
 	/// footprint.
 	#[serde(with = "option_tuple")]
-	clearance: Option<mm>,
+	pub clearance: Option<mm>,
 
 	/// Defines how all pads are connected to filled zone.
 	#[serde(with = "option_tuple")]
-	zone_connect: Option<ConnectPads>,
+	pub zone_connect: Option<ConnectPads>,
 
 	/// Defined the thermal relief spoke width used for zone connections for all
 	/// pads in the footprint. This only affects pads connected to zones with
 	/// thermal reliefs.
 	#[serde(with = "option_tuple")]
-	thermal_width: Option<mm>,
+	pub thermal_width: Option<mm>,
 
 	/// Defines the distance from the pad to the zone of thermal relief connections
 	/// for all pads in the footprint.
 	#[serde(with = "option_tuple")]
-	thermal_gap: Option<mm>,
+	pub thermal_gap: Option<mm>,
 
 	/// Defines the attributes of the footprint.
-	attr: Attributes
+	pub attr: Attributes
 }
