@@ -25,4 +25,5 @@ uuid = { version = "0.8.2", features = ["serde"] }
 
 [dev-dependencies]
 pretty_assertions = "1.0"
+serde_path_to_error = "0.1"
 termcolor = "1.1"

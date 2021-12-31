@@ -1,9 +1,5 @@
 use super::{ConnectPads, Layer, Timestamp};
-use crate::{
-	common::Position,
-	internal::{option_tuple, tuple},
-	mm
-};
+use crate::{common::Position, internal::option_tuple, mm};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -32,13 +28,32 @@ pub use poly::Polygon;
 pub use rect::Rectangle;
 pub use text::Text;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(untagged)]
+pub enum FootprintContent {
+	Text(Text),
+	Line(Line),
+	Rect(Rectangle),
+	Circle(Circle),
+	Arc(Arc),
+	Poly(Polygon),
+	Curve(Curve),
+	Pad(Pad)
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "footprint")]
 pub struct Footprint {
 	/// Defines the link to footprint library of the footprint. This only applies to
 	/// footprints defined in the board file format.
 	#[serde(with = "serde_sexpr::Option")]
 	pub library_link: Option<String>,
+
+	#[serde(with = "option_tuple")]
+	pub version: Option<u32>,
+
+	#[serde(with = "option_tuple")]
+	pub generator: Option<String>,
 
 	/// Defines a flag to indicate the footprint cannot be edited.
 	pub locked: bool,
@@ -72,8 +87,8 @@ pub struct Footprint {
 
 	/// Defines the hierarchical path of the schematic symbol linked to the
 	/// footprint. This only applies to footprints defined in the board file format.
-	#[serde(with = "tuple")]
-	pub path: String,
+	#[serde(with = "option_tuple")]
+	pub path: Option<String>,
 
 	/// Defines the vertical cost of when using the automatic footprint placement
 	/// tool. Valid values are integers 1 through 10. This only applies to
@@ -98,7 +113,7 @@ pub struct Footprint {
 	/// Defines the percentage of the pad size used to define the solder paste for
 	/// all pads in the footprint.
 	#[serde(with = "option_tuple")]
-	pub solder_paste_ration: Option<f32>,
+	pub solder_paste_ratio: Option<f32>,
 
 	/// Defines the clearance to all board copper objects for all pads in the
 	/// footprint.
@@ -122,4 +137,96 @@ pub struct Footprint {
 
 	/// Defines the attributes of the footprint.
 	pub attr: Attributes
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use crate::Unit;
+
+	#[test]
+	fn empty_lib_footprint() {
+		let input = r#"
+			(footprint "MountingHole"
+				(version 20211014)
+				(generator foobar)
+				(layer "F.Cu")
+				(tedit DEADBEEF)
+				(descr "A mounting hole")
+				(tags "mounting hole")
+				(attr exclude_from_pos_files exclude_from_bom))
+		"#;
+
+		let expected = Footprint {
+			library_link: Some("MountingHole".to_owned()),
+			version: Some(20211014),
+			generator: Some("foobar".to_owned()),
+			locked: false,
+			placed: false,
+			layer: Layer::new("F.Cu"),
+			tedit: Timestamp(0xDEADBEEF),
+			tstamp: None,
+			position: None,
+			description: Some("A mounting hole".to_owned()),
+			tags: Some("mounting hole".to_owned()),
+			path: None,
+			autoplace_cost90: None,
+			autoplace_cost180: None,
+			solder_mask_margin: None,
+			solder_paste_margin: None,
+			solder_paste_ratio: None,
+			clearance: None,
+			zone_connect: None,
+			thermal_width: None,
+			thermal_gap: None,
+			attr: Attributes::new_virtual()
+		};
+
+		let parsed: Footprint =
+			serde_sexpr::from_str(input).expect("Failed to parse input");
+		assert_eq!(parsed, expected);
+	}
+
+	#[test]
+	fn empty_pcb_footprint() {
+		let input = r#"
+			(footprint "MountingHole:MountingHole"
+				(layer "F.Cu")
+				(tedit DEADBEEF)
+				(tstamp 931fb3d7-f50a-4517-80c8-bbc40990b0af)
+				(at 42 42)
+				(descr "A mounting hole")
+				(tags "mounting hole")
+				(attr exclude_from_pos_files exclude_from_bom))
+		"#;
+
+		let expected = Footprint {
+			library_link: Some("MountingHole:MountingHole".to_owned()),
+			version: None,
+			generator: None,
+			locked: false,
+			placed: false,
+			layer: Layer::new("F.Cu"),
+			tedit: Timestamp(0xDEADBEEF),
+			tstamp: Some("931fb3d7-f50a-4517-80c8-bbc40990b0af".parse().unwrap()),
+			position: Some(Position::new(42.0.mm(), 42.0.mm())),
+			description: Some("A mounting hole".to_owned()),
+			tags: Some("mounting hole".to_owned()),
+			path: None,
+			autoplace_cost90: None,
+			autoplace_cost180: None,
+			solder_mask_margin: None,
+			solder_paste_margin: None,
+			solder_paste_ratio: None,
+			clearance: None,
+			zone_connect: None,
+			thermal_width: None,
+			thermal_gap: None,
+			attr: Attributes::new_virtual()
+		};
+
+		let parsed: Footprint =
+			serde_sexpr::from_str(input).expect("Failed to parse input");
+		assert_eq!(parsed, expected);
+	}
 }

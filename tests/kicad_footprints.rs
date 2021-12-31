@@ -1,4 +1,5 @@
 use kicad_files::board::Footprint;
+use serde_sexpr::de::Deserializer;
 use std::{
 	fs::{self, File},
 	io::{self, Read as _, Write as _},
@@ -52,8 +53,12 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 
 							if input.starts_with("(footprint") {
 								fp_count += 1;
-								if let Err(err) = serde_sexpr::from_str(&input)
-									.map(|_fp: Footprint| ())
+								let mut deserializer =
+									Deserializer::from_str(&input);
+								if let Err(err) = serde_path_to_error::deserialize(
+									&mut deserializer
+								)
+								.map(|_fp: Footprint| ())
 								{
 									if ok {
 										write_fail(&mut stdout)?;
@@ -65,8 +70,10 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 									)?;
 									writeln!(
 										stdout,
-										"\t\t{}: {}",
-										path.strip_prefix(&dir).unwrap().display(),
+										"\t\t{}: {:?}",
+										path.strip_prefix(&cargo_dir)
+											.unwrap()
+											.display(),
 										err
 									)?;
 									stdout
