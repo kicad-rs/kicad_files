@@ -1,5 +1,4 @@
 use crate::internal::{u32_hex, UnitVariant};
-use num_traits::cast::ToPrimitive;
 use paste::paste;
 use serde::{
 	de::{self, Deserializer, Unexpected, Visitor},
@@ -19,7 +18,7 @@ impl Timestamp {
 
 struct TimestampVisitor;
 
-macro_rules! visit_to_u32 {
+macro_rules! visit_try_from {
 	($($int:ident)+) => {
 		$(
 			paste! {
@@ -27,7 +26,7 @@ macro_rules! visit_to_u32 {
 				where
 					E: de::Error
 				{
-					v.to_u32().ok_or_else(|| {
+					u32::try_from(v).map_err(|_| {
 						let unexp = format!("{}", v);
 						E::invalid_type(Unexpected::Other(&unexp), &self)
 					})
@@ -58,8 +57,8 @@ impl<'de> Visitor<'de> for TimestampVisitor {
 		Ok(v)
 	}
 
-	visit_to_u32! {
-		i8 i16 i32 i64 i128 u8 u16 u64 u128 f32 f64
+	visit_try_from! {
+		i8 i16 i32 i64 i128 u8 u16 u64 u128
 	}
 }
 
@@ -97,6 +96,12 @@ mod tests {
 		name: one,
 		input: "(tedit 00000001)",
 		value: Timestamp(1)
+	}
+
+	sexpr_test_case! {
+		name: ten,
+		input: "(tedit 0000000A)",
+		value: Timestamp(10)
 	}
 
 	sexpr_test_case! {

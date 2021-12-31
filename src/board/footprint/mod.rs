@@ -136,7 +136,10 @@ pub struct Footprint {
 	pub thermal_gap: Option<mm>,
 
 	/// Defines the attributes of the footprint.
-	pub attr: Attributes
+	pub attr: Attributes,
+
+	#[serde(default, rename = "")]
+	pub content: Vec<FootprintContent>
 }
 
 #[cfg(test)]
@@ -179,7 +182,8 @@ mod tests {
 			zone_connect: None,
 			thermal_width: None,
 			thermal_gap: None,
-			attr: Attributes::new_virtual()
+			attr: Attributes::new_virtual(),
+			content: Vec::new()
 		};
 
 		let parsed: Footprint =
@@ -222,7 +226,8 @@ mod tests {
 			zone_connect: None,
 			thermal_width: None,
 			thermal_gap: None,
-			attr: Attributes::new_virtual()
+			attr: Attributes::new_virtual(),
+			content: Vec::new()
 		};
 
 		let parsed: Footprint =
