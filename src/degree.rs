@@ -7,20 +7,30 @@ use core::{
 };
 use paste::paste;
 use serde::{de::Error as _, Deserialize, Deserializer, Serialize, Serializer};
+use thiserror::Error;
+
+#[derive(Clone, Copy, Debug, Eq, Error, PartialEq)]
+pub enum InvalidNumber<T> {
+	#[error("non-finite number")]
+	NonFinite,
+
+	#[error("invalid value: {value}, expected value from {min} through {max}")]
+	InvalidValue { value: T, min: T, max: T }
+}
 
 macro_rules! unit {
-	(pub const struct $name:ident($min:literal <= $inner:ident < $max:literal);) => {
+	(pub const struct $name:ident($min:literal <= $inner:ident <= $max:literal);) => {
 		unit!(@internal [const]; $name($min, $inner, $max););
 	};
 
-	(pub struct $name:ident($min:literal <= $inner:ident < $max:literal);) => {
+	(pub struct $name:ident($min:literal <= $inner:ident <= $max:literal);) => {
 		unit!(@internal []; $name($min, $inner, $max););
 	};
 
 	(@internal [$($const:tt)?]; $name:ident($min:literal, $inner:ident, $max:literal);) => {
 		paste! {
 			mod [<unit_ $name>] {
-				use millimeter::NonFinite;
+				use super::InvalidNumber;
 
 				#[derive(Clone, Copy, PartialEq, PartialOrd)]
 				#[allow(non_camel_case_types)]
@@ -31,44 +41,43 @@ macro_rules! unit {
 					pub const MAX: $name = $name($max);
 
 					/// This is a helper method for creating this type. You might
-					/// want to use the [`Unit`] trait if you don't need a `const`
+					/// want to use the [`Deg`] trait if you don't need a `const`
 					/// function.
 					///
-					///  [`Unit`]: super::Unit
-					pub $($const)? fn try_new(mut inner: $inner) -> Result<Self, NonFinite> {
+					///  [`Deg`]: super::Deg
+					pub $($const)? fn try_new(inner: $inner) -> Result<Self, InvalidNumber<$inner>> {
 						if !inner.is_finite() {
-							return Err(NonFinite);
+							return Err(InvalidNumber::NonFinite);
 						}
 
-						const MOD: $inner = $max - $min;
-						while inner >= $max {
-							inner -= MOD;
+						if inner < $min || inner > $max {
+							return Err(InvalidNumber::InvalidValue {
+								value: inner,
+								min: $min,
+								max: $max
+							});
 						}
-						while inner < $min {
-							inner += MOD;
-						}
-						debug_assert!($min <= inner);
-						debug_assert!(inner < $max);
 
 						Ok(Self(inner))
 					}
 
 					/// This is a helper method for creating this type. You might
-					/// want to use the [`Unit`] trait if you don't need a `const`
+					/// want to use the [`Deg`] trait if you don't need a `const`
 					/// function.
 					///
 					/// ### Panics
 					///
-					/// This method panics if the inner value is non-finite
+					/// This method panics if the inner value is non-finite or not
+					/// in the correct range.
 					///
-					///  [`Unit`]: super::Unit
+					///  [`Deg`]: super::Unit
 					pub $($const)? fn new(inner: $inner) -> Self {
 						match Self::try_new(inner) {
 							Ok(unit) => unit,
-							Err(NonFinite) => panic!(concat!(
-								stringify!($name),
-								" only supports finite numbers"
-							))
+							Err(err) => panic!(
+								"{} only supports finite numbers from {} through {}: {}",
+								stringify!($name), $min, $max, err
+							)
 						}
 					}
 
@@ -225,7 +234,7 @@ macro_rules! unit {
 }
 
 unit! {
-	pub struct deg(-90.0 <= f32 < 270.0);
+	pub struct deg(-360.0 <= f32 <= 360.0);
 }
 
 impl deg {

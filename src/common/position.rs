@@ -48,22 +48,4 @@ mod tests {
 		input: "(at 1.27 -2.54 -90)",
 		value: Position::new_with_angle(1.27.mm(), -2.54.mm(), -90.0.deg())
 	}
-
-	#[test]
-	fn test_deserialize_with_overrotation() {
-		let value = Position::new_with_angle(1.27.mm(), -2.54.mm(), -90.0.deg());
-		let input = "(at 1.27 -2.54 270)";
-		let parsed: Position =
-			serde_sexpr::from_str(input).expect("Failed to parse input");
-		pretty_assertions::assert_eq!(parsed, value);
-	}
-
-	#[test]
-	fn test_deserialize_with_neg_overrotation() {
-		let value = Position::new_with_angle(1.27.mm(), -2.54.mm(), 90.0.deg());
-		let input = "(at 1.27 -2.54 -270)";
-		let parsed: Position =
-			serde_sexpr::from_str(input).expect("Failed to parse input");
-		pretty_assertions::assert_eq!(parsed, value);
-	}
 }
