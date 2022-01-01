@@ -1,7 +1,9 @@
 use crate::{
 	board::Layer,
 	common::{Effects, Position},
-	internal::tuple_or_default
+	deg,
+	internal::{tuple, tuple_or_default},
+	mm
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -14,8 +16,61 @@ pub enum TextType {
 	User
 }
 
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields, rename = "at")]
+struct UnlockablePosition {
+	x: mm,
+
+	y: mm,
+
+	#[serde(with = "serde_sexpr::Option")]
+	angle: Option<deg>,
+
+	unlocked: bool
+}
+
+#[derive(Deserialize)]
 #[serde(deny_unknown_fields, rename = "fp_text")]
+struct TextDef {
+	ty: TextType,
+
+	text: String,
+
+	position: UnlockablePosition,
+
+	unlocked: bool,
+
+	layer: Layer,
+
+	hide: bool,
+
+	effects: Effects,
+
+	#[serde(with = "tuple_or_default")]
+	tstamp: Uuid
+}
+
+impl From<TextDef> for Text {
+	fn from(def: TextDef) -> Self {
+		Self {
+			ty: def.ty,
+			text: def.text,
+			position: Position {
+				x: def.position.x,
+				y: def.position.y,
+				angle: def.position.angle
+			},
+			unlocked: def.unlocked || def.position.unlocked,
+			layer: def.layer,
+			hide: def.hide,
+			effects: def.effects,
+			tstamp: def.tstamp
+		}
+	}
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(from = "TextDef", rename = "fp_text")]
 pub struct Text {
 	pub ty: TextType,
 
@@ -33,7 +88,7 @@ pub struct Text {
 
 	pub effects: Effects,
 
-	#[serde(with = "tuple_or_default")]
+	#[serde(with = "tuple")]
 	pub tstamp: Uuid
 }
 

@@ -4,11 +4,7 @@ use super::{
 	},
 	Layer, Timestamp
 };
-use crate::{
-	common::Position,
-	internal::{option_tuple, rename},
-	mm
-};
+use crate::{common::Position, internal::option_tuple, mm};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, PartialEq)]
@@ -18,7 +14,7 @@ pub(super) struct FootprintModule {
 
 	layer: Layer,
 
-	#[serde(with = "rename::option::at")]
+	#[serde(with = "serde_sexpr::Option")]
 	position: Option<Position>,
 
 	tedit: Timestamp,

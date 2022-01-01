@@ -228,5 +228,5 @@ macro_rules! rename {
 }
 
 rename! {
-	start end center mid offset at
+	start end center mid offset
 }
