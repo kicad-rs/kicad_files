@@ -9,6 +9,7 @@ mod circle;
 mod curve;
 mod fill_type;
 mod line;
+mod model;
 mod pad;
 mod poly;
 mod rect;
@@ -20,6 +21,7 @@ pub use circle::Circle;
 pub use curve::Curve;
 pub use fill_type::FillType;
 pub use line::Line;
+pub use model::{Model, Xyz};
 pub use pad::{
 	Pad, PadAnchor, PadClearanceType, PadDrill, PadOptions, PadShape, PadSize,
 	PadType
@@ -28,17 +30,19 @@ pub use poly::Polygon;
 pub use rect::Rectangle;
 pub use text::Text;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[serde(untagged)]
-pub enum FootprintContent {
-	Text(Text),
-	Line(Line),
-	Rect(Rectangle),
-	Circle(Circle),
-	Arc(Arc),
-	Poly(Polygon),
-	Curve(Curve),
-	Pad(Pad)
+serde_sexpr::untagged! {
+	#[derive(Clone, Debug, PartialEq)]
+	pub enum FootprintContent {
+		Text(Text),
+		Line(Line),
+		Rect(Rectangle),
+		Circle(Circle),
+		Arc(Arc),
+		Poly(Polygon),
+		Curve(Curve),
+		Pad(Pad),
+		Model(Model)
+	}
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
