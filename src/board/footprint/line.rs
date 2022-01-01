@@ -1,7 +1,7 @@
 use crate::{
 	board::Layer,
 	common::Point,
-	internal::{option_unit, rename, tuple},
+	internal::{option_unit, rename, tuple, tuple_or_default},
 	mm
 };
 use serde::{Deserialize, Serialize};
@@ -24,7 +24,7 @@ pub struct Line {
 	#[serde(with = "option_unit")]
 	pub locked: bool,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple_or_default")]
 	pub tstamp: Uuid
 }
 

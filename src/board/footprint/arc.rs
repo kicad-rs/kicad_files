@@ -2,7 +2,7 @@ use crate::{
 	board::Layer,
 	common::Point,
 	deg,
-	internal::{option_tuple, option_unit, rename, tuple},
+	internal::{option_tuple, option_unit, rename, tuple, tuple_or_default},
 	mm
 };
 use serde::{Deserialize, Serialize};
@@ -32,7 +32,7 @@ struct ArcDef {
 	#[serde(with = "option_unit")]
 	locked: bool,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple_or_default")]
 	tstamp: Uuid
 }
 

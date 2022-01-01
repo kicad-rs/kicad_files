@@ -1,11 +1,10 @@
 use super::ConnectPads;
 use crate::{
 	common::{Point, Position},
-	internal::{option_tuple, option_unit, rename, tuple},
+	internal::{option_tuple, option_unit, rename, tuple_or_default},
 	mm
 };
 use serde::{Deserialize, Serialize};
-use serde_sexpr::Literal;
 use uuid::Uuid;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -90,7 +89,7 @@ pub struct PadOptions {
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "pad")]
 pub struct Pad {
-	pub number: Literal,
+	pub number: String,
 
 	pub ty: PadType,
 
@@ -126,7 +125,7 @@ pub struct Pad {
 	#[serde(with = "serde_sexpr::Option")]
 	pub net: Option<(u32, String)>,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple_or_default")]
 	pub tstamp: Uuid,
 
 	#[serde(with = "option_tuple")]
@@ -174,7 +173,7 @@ impl Pad {
 		tstamp: Uuid
 	) -> Self
 	where
-		N: Into<Literal>
+		N: Into<String>
 	{
 		Self {
 			number: number.into(),

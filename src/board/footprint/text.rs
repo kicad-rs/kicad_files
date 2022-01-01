@@ -1,7 +1,7 @@
 use crate::{
 	board::Layer,
 	common::{Effects, Position},
-	internal::tuple
+	internal::tuple_or_default
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -33,7 +33,7 @@ pub struct Text {
 
 	pub effects: Effects,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple_or_default")]
 	pub tstamp: Uuid
 }
 

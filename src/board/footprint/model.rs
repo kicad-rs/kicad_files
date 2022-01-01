@@ -57,7 +57,7 @@ impl From<ModelDef> for Model {
 	fn from(def: ModelDef) -> Self {
 		Self {
 			file: def.file,
-			at: def.at.unwrap_or_default() + def.offset.unwrap_or_default(),
+			offset: def.at.unwrap_or_default() + def.offset.unwrap_or_default(),
 			scale: def.scale,
 			rotate: def.rotate
 		}
@@ -70,7 +70,7 @@ pub struct Model {
 	pub file: String,
 
 	#[serde(with = "tuple")]
-	pub at: Xyz<mm>,
+	pub offset: Xyz<mm>,
 
 	#[serde(with = "tuple")]
 	pub scale: Xyz<f32>,
@@ -85,22 +85,22 @@ mod tests {
 	use crate::{sexpr_test_case, Deg, Unit};
 
 	sexpr_test_case! {
-		name: model_with_at,
-		input: r#"(model "model.wrl" (at (xyz 5 -1 3)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))"#,
+		name: model_with_offset,
+		input: r#"(model "model.wrl" (offset (xyz 5 -1 3)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))"#,
 		value: Model {
 			file: "model.wrl".to_owned(),
-			at: Xyz::new(5.0.mm(), -1.0.mm(), 3.0.mm()),
+			offset: Xyz::new(5.0.mm(), -1.0.mm(), 3.0.mm()),
 			scale: Xyz::new(1.0, 1.0, 1.0),
 			rotate: Xyz::new(0.0.deg(), 0.0.deg(), 0.0.deg())
 		}
 	}
 
 	#[test]
-	fn test_deserialize_model_with_offset() {
-		let input = r#"(model "model.wrl" (offset (xyz 5 -1 3)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))"#;
+	fn test_deserialize_model_with_at() {
+		let input = r#"(model "model.wrl" (at (xyz 5 -1 3)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))"#;
 		let value = Model {
 			file: "model.wrl".to_owned(),
-			at: Xyz::new(5.0.mm(), -1.0.mm(), 3.0.mm()),
+			offset: Xyz::new(5.0.mm(), -1.0.mm(), 3.0.mm()),
 			scale: Xyz::new(1.0, 1.0, 1.0),
 			rotate: Xyz::new(0.0.deg(), 0.0.deg(), 0.0.deg())
 		};

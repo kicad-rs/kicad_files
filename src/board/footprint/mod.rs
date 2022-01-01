@@ -45,6 +45,22 @@ serde_sexpr::untagged! {
 	}
 }
 
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(transparent)]
+pub struct Version(u32);
+
+impl Default for Version {
+	fn default() -> Self {
+		Self(20211014)
+	}
+}
+
+impl Version {
+	pub fn new() -> Self {
+		Self::default()
+	}
+}
+
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "footprint")]
 pub struct Footprint {
@@ -54,7 +70,7 @@ pub struct Footprint {
 	pub library_link: Option<String>,
 
 	#[serde(with = "option_tuple")]
-	pub version: Option<u32>,
+	pub version: Option<Version>,
 
 	#[serde(with = "option_tuple")]
 	pub generator: Option<String>,
@@ -140,7 +156,7 @@ pub struct Footprint {
 	pub thermal_gap: Option<mm>,
 
 	/// Defines the attributes of the footprint.
-	pub attr: Attributes,
+	pub attributes: Attributes,
 
 	#[serde(default, rename = "")]
 	pub content: Vec<FootprintContent>
@@ -166,7 +182,7 @@ mod tests {
 
 		let expected = Footprint {
 			library_link: Some("MountingHole".to_owned()),
-			version: Some(20211014),
+			version: Some(Version(20211014)),
 			generator: Some("foobar".to_owned()),
 			locked: false,
 			placed: false,
@@ -186,7 +202,7 @@ mod tests {
 			zone_connect: None,
 			thermal_width: None,
 			thermal_gap: None,
-			attr: Attributes::new_virtual(),
+			attributes: Attributes::new_virtual(),
 			content: Vec::new()
 		};
 
@@ -230,7 +246,7 @@ mod tests {
 			zone_connect: None,
 			thermal_width: None,
 			thermal_gap: None,
-			attr: Attributes::new_virtual(),
+			attributes: Attributes::new_virtual(),
 			content: Vec::new()
 		};
 

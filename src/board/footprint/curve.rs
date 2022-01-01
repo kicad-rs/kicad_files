@@ -1,7 +1,7 @@
 use crate::{
 	board::Layer,
 	common::PointList,
-	internal::{option_unit, tuple},
+	internal::{option_unit, tuple, tuple_or_default},
 	mm
 };
 use serde::{Deserialize, Serialize};
@@ -20,7 +20,7 @@ pub struct Curve {
 	#[serde(with = "option_unit")]
 	pub locked: bool,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple_or_default")]
 	pub tstamp: Uuid
 }
 

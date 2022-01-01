@@ -2,6 +2,7 @@ pub(crate) mod option_tuple;
 pub(crate) mod option_unit;
 pub(crate) mod rename;
 pub(crate) mod tuple;
+pub(crate) mod tuple_or_default;
 
 mod u32_hex;
 mod unit_variant;
