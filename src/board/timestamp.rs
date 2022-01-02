@@ -74,10 +74,14 @@ impl Serialize for Timestamp {
 	where
 		S: Serializer
 	{
-		serializer.serialize_newtype_struct(
-			"tedit",
-			&UnitVariant("Timestamp", self.0, u32_hex(self.0))
-		)
+		if self.0 == 0 {
+			serializer.serialize_newtype_struct("tedit", &self.0)
+		} else {
+			serializer.serialize_newtype_struct(
+				"tedit",
+				&UnitVariant("Timestamp", self.0, u32_hex(self.0))
+			)
+		}
 	}
 }
 
@@ -88,7 +92,7 @@ mod tests {
 
 	sexpr_test_case! {
 		name: zero,
-		input: "(tedit 00000000)",
+		input: "(tedit 0)",
 		value: Timestamp(0)
 	}
 
@@ -102,6 +106,12 @@ mod tests {
 		name: ten,
 		input: "(tedit 0000000A)",
 		value: Timestamp(10)
+	}
+
+	sexpr_test_case! {
+		name: sixten,
+		input: "(tedit 00000010)",
+		value: Timestamp(16)
 	}
 
 	sexpr_test_case! {

@@ -5,7 +5,36 @@ use super::{
 	Layer, Timestamp
 };
 use crate::{common::Position, internal::option_tuple, mm};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize, Serializer};
+
+#[derive(Debug, Deserialize, PartialEq)]
+#[serde(rename_all = "snake_case")]
+enum ModuleAttributes {
+	#[serde(rename = "thru_hole")]
+	ThroughHole,
+	Smd,
+	Virtual
+}
+
+#[derive(Debug, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields, rename = "attr")]
+struct Attr(ModuleAttributes);
+
+impl Default for Attr {
+	fn default() -> Self {
+		Self(ModuleAttributes::ThroughHole)
+	}
+}
+
+impl From<Attr> for Attributes {
+	fn from(attr: Attr) -> Self {
+		match attr.0 {
+			ModuleAttributes::ThroughHole => Self::new(FootprintType::ThroughHole),
+			ModuleAttributes::Smd => Self::new(FootprintType::Smd),
+			ModuleAttributes::Virtual => Self::new_virtual()
+		}
+	}
+}
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(deny_unknown_fields, rename = "module")]
@@ -17,16 +46,23 @@ pub(super) struct FootprintModule {
 	#[serde(with = "serde_sexpr::Option")]
 	position: Option<Position>,
 
-	tedit: Timestamp,
+	#[serde(with = "serde_sexpr::Option")]
+	tedit: Option<Timestamp>,
+
+	#[serde(with = "serde_sexpr::Option")]
+	attributes_top: Option<Attr>,
 
 	#[serde(rename = "descr", with = "option_tuple")]
 	description: Option<String>,
+
+	#[serde(with = "serde_sexpr::Option")]
+	attributes_semitop: Option<Attr>,
 
 	#[serde(with = "option_tuple")]
 	tags: Option<String>,
 
 	#[serde(with = "serde_sexpr::Option")]
-	attributes: Option<Attributes>,
+	attributes_mid: Option<Attr>,
 
 	#[serde(with = "option_tuple")]
 	solder_mask_margin: Option<mm>,
@@ -40,8 +76,24 @@ pub(super) struct FootprintModule {
 	#[serde(with = "option_tuple")]
 	clearance: Option<mm>,
 
+	#[serde(with = "serde_sexpr::Option")]
+	attributes_bottom: Option<Attr>,
+
 	#[serde(default, rename = "")]
 	content: Vec<FootprintContent>
+}
+
+/// **DO NOT USE**
+impl Serialize for FootprintModule {
+	fn serialize<S>(&self, _serializer: S) -> Result<S::Ok, S::Error>
+	where
+		S: Serializer
+	{
+		// we only need this to satisfy the serde_sexpr::untagged macro
+		// this method will never get called, so we won't bother implementing
+		// anything here
+		unimplemented!()
+	}
 }
 
 impl From<FootprintModule> for Footprint {
@@ -66,7 +118,7 @@ impl From<FootprintModule> for Footprint {
 			locked: false,
 			placed: false,
 			layer: module.layer,
-			tedit: module.tedit,
+			tedit: module.tedit.unwrap_or(Timestamp(0)),
 			tstamp: None,
 			position: module.position,
 			description: module.description,
@@ -82,8 +134,12 @@ impl From<FootprintModule> for Footprint {
 			thermal_width: None,
 			thermal_gap: None,
 			attributes: module
-				.attributes
-				.unwrap_or_else(|| Attributes::new(FootprintType::ThroughHole)),
+				.attributes_mid
+				.or(module.attributes_top)
+				.or(module.attributes_semitop)
+				.or(module.attributes_bottom)
+				.unwrap_or_default()
+				.into(),
 			content
 		}
 	}
@@ -107,15 +163,18 @@ mod tests {
 		let expected = FootprintModule {
 			library_link: "MountingHole".to_owned(),
 			layer: Layer::new("F.Cu"),
-			tedit: Timestamp(0xDEADBEEF),
+			tedit: Some(Timestamp(0xDEADBEEF)),
 			position: None,
+			attributes_top: None,
 			description: Some("A mounting hole".to_owned()),
+			attributes_semitop: None,
 			tags: Some("mounting hole".to_owned()),
+			attributes_mid: None,
 			solder_mask_margin: None,
 			solder_paste_margin: None,
 			solder_paste_ratio: None,
 			clearance: None,
-			attributes: None,
+			attributes_bottom: None,
 			content: Vec::new()
 		};
 

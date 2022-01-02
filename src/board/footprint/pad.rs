@@ -1,7 +1,7 @@
-use super::ConnectPads;
+use super::{ConnectPads, Primitives};
 use crate::{
 	common::{Point, Position},
-	internal::{option_tuple, option_unit, rename, tuple_or_default},
+	internal::{option_tuple, option_unit, rename, tuple, tuple_or_default},
 	mm
 };
 use serde::{Deserialize, Serialize};
@@ -43,11 +43,16 @@ impl PadSize {
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields, rename = "rect_delta")]
+pub struct RectDelta(mm, mm);
+
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "drill")]
 pub struct PadDrill {
 	pub oval: bool,
 
-	pub diameter: mm,
+	#[serde(with = "serde_sexpr::Option")]
+	pub diameter: Option<mm>,
 
 	#[serde(with = "serde_sexpr::Option")]
 	pub width: Option<mm>,
@@ -82,7 +87,10 @@ pub enum PadAnchor {
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "options")]
 pub struct PadOptions {
+	#[serde(with = "tuple")]
 	pub clearance: PadClearanceType,
+
+	#[serde(with = "tuple")]
 	pub anchor: PadAnchor
 }
 
@@ -101,6 +109,9 @@ pub struct Pad {
 	pub locked: bool,
 
 	pub size: PadSize,
+
+	#[serde(with = "serde_sexpr::Option")]
+	pub rect_delta: Option<RectDelta>,
 
 	#[serde(with = "serde_sexpr::Option")]
 	pub drill: Option<PadDrill>,
@@ -159,7 +170,10 @@ pub struct Pad {
 	pub thermal_gap: Option<mm>,
 
 	#[serde(with = "serde_sexpr::Option")]
-	pub custom_pad_options: Option<PadOptions>
+	pub custom_pad_options: Option<PadOptions>,
+
+	#[serde(with = "serde_sexpr::Option")]
+	pub custom_pad_primitives: Option<Primitives>
 }
 
 impl Pad {
@@ -182,6 +196,7 @@ impl Pad {
 			position: pos,
 			locked: false,
 			size,
+			rect_delta: None,
 			drill: None,
 			layers,
 			remove_unused_layer: false,
@@ -201,7 +216,8 @@ impl Pad {
 			zone_connect: None,
 			thermal_width: None,
 			thermal_gap: None,
-			custom_pad_options: None
+			custom_pad_options: None,
+			custom_pad_primitives: None
 		}
 	}
 }

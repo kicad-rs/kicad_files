@@ -1,16 +1,15 @@
 use crate::{
-	board::Layer,
+	board::{footprint::arc, Layer},
 	common::Point,
 	deg,
-	internal::{option_tuple, option_unit, rename, tuple, tuple_or_default},
+	internal::{option_tuple, rename, tuple, tuple_or_default},
 	mm
 };
 use serde::{Deserialize, Serialize};
-use thiserror::Error;
 use uuid::Uuid;
 
 #[derive(Deserialize)]
-#[serde(deny_unknown_fields, rename = "fp_arc")]
+#[serde(deny_unknown_fields, rename = "gr_arc")]
 struct ArcDef {
 	#[serde(with = "rename::start")]
 	start: Point,
@@ -24,42 +23,20 @@ struct ArcDef {
 	#[serde(with = "option_tuple")]
 	angle: Option<deg>,
 
-	layer: Layer,
+	#[serde(with = "serde_sexpr::Option")]
+	layer: Option<Layer>,
 
 	#[serde(with = "tuple")]
 	width: mm,
-
-	#[serde(with = "option_unit")]
-	locked: bool,
 
 	#[serde(with = "tuple_or_default")]
 	tstamp: Uuid
 }
 
-#[derive(Debug, Error)]
-pub(crate) enum InvalidArc {
-	#[error("Missing mid or angle definition")]
-	MissingMidOrAngle,
-
-	#[error("Conflicting mid and angle definitions")]
-	ConflictingMidAndAngle
-}
-
-pub(crate) fn start_mid_from_start_end_angle(
-	start: Point,
-	end: Point,
-	angle: deg
-) -> (Point, Point) {
-	(
-		end.rotate_around(start, angle).round_nm_precision(),
-		end.rotate_around(start, angle / 2.0).round_nm_precision()
-	)
-}
-
 impl TryFrom<ArcDef> for Arc {
-	type Error = InvalidArc;
+	type Error = arc::InvalidArc;
 
-	fn try_from(def: ArcDef) -> Result<Self, InvalidArc> {
+	fn try_from(def: ArcDef) -> Result<Self, Self::Error> {
 		match (def.mid, def.angle) {
 			(Some(mid), None) => Ok(Self {
 				start: def.start,
@@ -67,32 +44,30 @@ impl TryFrom<ArcDef> for Arc {
 				end: def.end,
 				layer: def.layer,
 				width: def.width,
-				locked: def.locked,
 				tstamp: def.tstamp
 			}),
 
 			(None, Some(angle)) => {
 				let (start, mid) =
-					start_mid_from_start_end_angle(def.start, def.end, angle);
+					arc::start_mid_from_start_end_angle(def.start, def.end, angle);
 				Ok(Self {
 					start,
 					mid,
 					end: def.end,
 					layer: def.layer,
 					width: def.width,
-					locked: def.locked,
 					tstamp: def.tstamp
 				})
 			},
 
-			(None, None) => Err(InvalidArc::MissingMidOrAngle),
-			(Some(_), Some(_)) => Err(InvalidArc::ConflictingMidAndAngle)
+			(None, None) => Err(arc::InvalidArc::MissingMidOrAngle),
+			(Some(_), Some(_)) => Err(arc::InvalidArc::ConflictingMidAndAngle)
 		}
 	}
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(try_from = "ArcDef", rename = "fp_arc")]
+#[serde(try_from = "ArcDef", rename = "gr_arc")]
 pub struct Arc {
 	#[serde(with = "rename::start")]
 	pub start: Point,
@@ -103,13 +78,10 @@ pub struct Arc {
 	#[serde(with = "rename::end")]
 	pub end: Point,
 
-	pub layer: Layer,
+	pub layer: Option<Layer>,
 
 	#[serde(with = "tuple")]
 	pub width: mm,
-
-	#[serde(with = "option_unit")]
-	pub locked: bool,
 
 	#[serde(with = "tuple")]
 	pub tstamp: Uuid
@@ -122,28 +94,26 @@ mod tests {
 
 	sexpr_test_case! {
 		name: arc_with_mid,
-		input: r#"(fp_arc (start 8.9 2) (mid -2.403861 0) (end 8.9 -2) (layer "F.SilkS") (width 0.12) (tstamp "00000000-0000-0000-0000-000000000000"))"#,
+		input: r#"(gr_arc (start 8.9 2) (mid -2.403861 0) (end 8.9 -2) (width 0.12) (tstamp "00000000-0000-0000-0000-000000000000"))"#,
 		value: Arc {
 			start: Point::new(8.9.mm(), 2.0.mm()),
 			mid: Point::new(-2.403861.mm(), 0.0.mm()),
 			end: Point::new(8.9.mm(), -2.0.mm()),
-			layer: Layer::new("F.SilkS"),
+			layer: None,
 			width: 0.12.mm(),
-			locked: false,
 			tstamp: Uuid::nil()
 		}
 	}
 
 	#[test]
 	fn test_deserialize_arc_with_angle() {
-		let input = r#"(fp_arc (start 3.425 0) (end 8.9 -2) (angle -319.8658258) (layer "F.SilkS") (width 0.12) (tstamp "00000000-0000-0000-0000-000000000000"))"#;
+		let input = r#"(gr_arc (start 3.425 0) (end 8.9 -2) (angle -319.8658258) (width 0.12) (tstamp "00000000-0000-0000-0000-000000000000"))"#;
 		let value = Arc {
 			start: Point::new(8.9.mm(), 2.0.mm()),
 			mid: Point::new(-2.403861.mm(), 0.0.mm()),
 			end: Point::new(8.9.mm(), -2.0.mm()),
-			layer: Layer::new("F.SilkS"),
+			layer: None,
 			width: 0.12.mm(),
-			locked: false,
 			tstamp: Uuid::nil()
 		};
 

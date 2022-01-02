@@ -1,9 +1,9 @@
-use super::{ConnectPads, Layer, Timestamp};
+use super::{footprint_module::FootprintModule, ConnectPads, Layer, Timestamp};
 use crate::{common::Position, internal::option_tuple, mm};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-mod arc;
+pub(super) mod arc;
 mod attributes;
 mod circle;
 mod curve;
@@ -12,6 +12,7 @@ mod line;
 mod model;
 mod pad;
 mod poly;
+mod primitives;
 mod rect;
 mod text;
 
@@ -27,6 +28,7 @@ pub use pad::{
 	PadType
 };
 pub use poly::Polygon;
+pub use primitives::Primitives;
 pub use rect::Rectangle;
 pub use text::Text;
 
@@ -160,6 +162,23 @@ pub struct Footprint {
 
 	#[serde(default, rename = "")]
 	pub content: Vec<FootprintContent>
+}
+
+serde_sexpr::untagged! {
+	enum FootprintOrModule {
+		Footprint(Footprint),
+		Module(FootprintModule)
+	}
+}
+
+impl Footprint {
+	pub fn from_str(s: &str) -> Result<Self, serde_sexpr::de::Error> {
+		let fp: FootprintOrModule = serde_sexpr::from_str(s)?;
+		Ok(match fp {
+			FootprintOrModule::Footprint(fp) => fp,
+			FootprintOrModule::Module(m) => m.into()
+		})
+	}
 }
 
 #[cfg(test)]

@@ -6,6 +6,7 @@
 mod connect_pads;
 pub mod footprint;
 mod footprint_module;
+pub mod graphic;
 mod layer;
 mod timestamp;
 

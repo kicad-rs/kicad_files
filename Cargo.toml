@@ -26,3 +26,6 @@ uuid = { version = "0.8.2", features = ["serde"] }
 pretty_assertions = "1.0"
 serde_sexpr = { git = "https://github.com/kicad-rs/serde_sexpr", features = ["backtrace"] }
 termcolor = "1.1"
+
+[profile.test]
+opt-level = 3

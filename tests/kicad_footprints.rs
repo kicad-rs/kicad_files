@@ -2,14 +2,16 @@ use kicad_files::board::Footprint;
 use std::{
 	fs::{self, File},
 	io::{self, Read as _, Write as _},
-	path::PathBuf
+	path::PathBuf,
+	time::{Duration, Instant}
 };
 use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor as _};
 
-fn write_ok(stdout: &mut StandardStream) -> io::Result<()> {
+fn write_ok(stdout: &mut StandardStream, duration: Duration) -> io::Result<()> {
 	stdout.set_color(ColorSpec::new().set_fg(Some(Color::Green)))?;
-	writeln!(stdout, " ok")?;
+	write!(stdout, " ok")?;
 	stdout.set_color(ColorSpec::new().set_fg(None))?;
+	writeln!(stdout, " ({:.3} secs)", duration.as_secs_f32())?;
 	Ok(())
 }
 
@@ -40,6 +42,7 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 				)?;
 				stdout.flush()?;
 
+				let timer = Instant::now();
 				let mut ok = true;
 				for entry in fs::read_dir(path).unwrap().map(Result::unwrap) {
 					let path = entry.path();
@@ -50,30 +53,23 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 							file.read_to_string(&mut input)?;
 							drop(file);
 
-							if input.starts_with("(footprint") {
-								fp_count += 1;
-								if let Err(err) = serde_sexpr::from_str(&input)
-									.map(|_fp: Footprint| ())
-								{
-									if ok {
-										write_fail(&mut stdout)?;
-									}
-									ok = false;
-									fp_fail += 1;
-									stdout.set_color(
-										ColorSpec::new().set_fg(Some(Color::Red))
-									)?;
-									writeln!(
-										stdout,
-										"\t\t{}: {:?}",
-										path.strip_prefix(&cargo_dir)
-											.unwrap()
-											.display(),
-										err
-									)?;
-									stdout
-										.set_color(ColorSpec::new().set_fg(None))?;
+							fp_count += 1;
+							if let Err(err) = Footprint::from_str(&input) {
+								if ok {
+									write_fail(&mut stdout)?;
 								}
+								ok = false;
+								fp_fail += 1;
+								stdout.set_color(
+									ColorSpec::new().set_fg(Some(Color::Red))
+								)?;
+								writeln!(
+									stdout,
+									"\t\t{}: {:?}",
+									path.strip_prefix(&cargo_dir).unwrap().display(),
+									err
+								)?;
+								stdout.set_color(ColorSpec::new().set_fg(None))?;
 							}
 						},
 						_ => {}
@@ -81,7 +77,7 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 				}
 
 				if ok {
-					write_ok(&mut stdout)?;
+					write_ok(&mut stdout, timer.elapsed())?;
 				}
 			},
 			_ => {}
