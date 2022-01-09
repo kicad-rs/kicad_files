@@ -32,7 +32,7 @@ struct ArcDef {
 	#[serde(with = "option_unit")]
 	locked: bool,
 
-	#[serde(with = "tuple_or_default")]
+	#[serde(with = "tuple_or_default", skip_serializing_if = "crate::skip_uuid")]
 	tstamp: Uuid
 }
 
@@ -111,7 +111,7 @@ pub struct Arc {
 	#[serde(with = "option_unit")]
 	pub locked: bool,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple", skip_serializing_if = "crate::skip_uuid")]
 	pub tstamp: Uuid
 }
 

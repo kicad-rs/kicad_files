@@ -16,7 +16,7 @@ pub struct Text {
 	#[serde(with = "serde_sexpr::Option")]
 	pub layer: Option<Layer>,
 
-	#[serde(with = "tuple_or_default")]
+	#[serde(with = "tuple_or_default", skip_serializing_if = "crate::skip_uuid")]
 	pub tstamp: Uuid,
 
 	pub effects: Effects

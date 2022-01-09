@@ -13,6 +13,9 @@ keywords = ["s-expression", "s-expr", "kicad", "serde", "serialization"]
 
 repository = "https://github.com/kicad-rs/kicad_files"
 
+[features]
+skip_nil_uuids = []
+
 [dependencies]
 millimeter = { git = "https://github.com/kicad-rs/millimeter", features = ["serde"] }
 once_cell = "1.9"

@@ -21,7 +21,7 @@ pub struct Polygon {
 	#[serde(with = "option_tuple")]
 	pub fill: Option<FillType>,
 
-	#[serde(with = "tuple_or_default")]
+	#[serde(with = "tuple_or_default", skip_serializing_if = "crate::skip_uuid")]
 	pub tstamp: Uuid
 }
 

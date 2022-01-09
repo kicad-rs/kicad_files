@@ -29,7 +29,7 @@ struct ArcDef {
 	#[serde(with = "tuple")]
 	width: mm,
 
-	#[serde(with = "tuple_or_default")]
+	#[serde(with = "tuple_or_default", skip_serializing_if = "crate::skip_uuid")]
 	tstamp: Uuid
 }
 
@@ -83,7 +83,7 @@ pub struct Arc {
 	#[serde(with = "tuple")]
 	pub width: mm,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple", skip_serializing_if = "crate::skip_uuid")]
 	pub tstamp: Uuid
 }
 

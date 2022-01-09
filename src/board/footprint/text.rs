@@ -88,7 +88,7 @@ pub struct Text {
 
 	pub effects: Effects,
 
-	#[serde(with = "tuple")]
+	#[serde(with = "tuple", skip_serializing_if = "crate::skip_uuid")]
 	pub tstamp: Uuid
 }
 

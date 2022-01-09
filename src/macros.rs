@@ -29,7 +29,10 @@ macro_rules! sexpr_test_case {
 				}
 
 				let value = $value;
-				assert_eq_ugly(&value, $input);
+				let expected = $input;
+				#[cfg(feature = "skip_nil_uuids")]
+				let expected = expected.replace(r#" (tstamp "00000000-0000-0000-0000-000000000000")"#, "");
+				assert_eq_ugly(&value, &expected);
 			}
 		}
 	};

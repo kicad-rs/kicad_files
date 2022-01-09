@@ -18,7 +18,7 @@ pub struct Curve {
 	#[serde(with = "tuple")]
 	pub width: mm,
 
-	#[serde(with = "tuple_or_default")]
+	#[serde(with = "tuple_or_default", skip_serializing_if = "crate::skip_uuid")]
 	pub tstamp: Uuid
 }
 

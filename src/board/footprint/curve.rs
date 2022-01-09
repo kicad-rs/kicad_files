@@ -20,7 +20,7 @@ pub struct Curve {
 	#[serde(with = "option_unit")]
 	pub locked: bool,
 
-	#[serde(with = "tuple_or_default")]
+	#[serde(with = "tuple_or_default", skip_serializing_if = "crate::skip_uuid")]
 	pub tstamp: Uuid
 }
 
