@@ -13,6 +13,8 @@ mod internal;
 
 pub mod board;
 pub mod common;
+pub mod symbol;
+pub mod symbol_lib;
 
 pub use degree::{deg, Deg};
 

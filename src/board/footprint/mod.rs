@@ -48,7 +48,7 @@ serde_sexpr::untagged! {
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
-#[serde(transparent)]
+#[serde(deny_unknown_fields, rename = "version")]
 pub struct Version(u32);
 
 impl Default for Version {
@@ -71,7 +71,7 @@ pub struct Footprint {
 	#[serde(with = "serde_sexpr::Option")]
 	pub library_link: Option<String>,
 
-	#[serde(with = "option_tuple")]
+	#[serde(with = "serde_sexpr::Option")]
 	pub version: Option<Version>,
 
 	#[serde(with = "option_tuple")]
