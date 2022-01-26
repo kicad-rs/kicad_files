@@ -1,4 +1,4 @@
-use crate::{deg, mm};
+use crate::{deg, mm, Unit};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -13,11 +13,19 @@ pub struct Position {
 }
 
 impl Position {
-	pub fn new(x: mm, y: mm) -> Self {
+	pub fn origin() -> Self {
+		Self {
+			x: 0.0.mm(),
+			y: 0.0.mm(),
+			angle: None
+		}
+	}
+
+	pub const fn new(x: mm, y: mm) -> Self {
 		Self { x, y, angle: None }
 	}
 
-	pub fn new_with_angle(x: mm, y: mm, angle: deg) -> Self {
+	pub const fn new_with_angle(x: mm, y: mm, angle: deg) -> Self {
 		Self {
 			x,
 			y,

@@ -8,10 +8,12 @@ use serde::{Deserialize, Serialize};
 
 mod fill;
 mod pin_names;
+mod property;
 mod stroke;
 
 pub use fill::{Fill, FillType};
 pub use pin_names::PinNames;
+pub use property::{Property, PropertyPosition};
 pub use stroke::{Stroke, StrokeType};
 
 mod pin_numbers {
