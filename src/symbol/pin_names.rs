@@ -1,6 +1,9 @@
 use crate::{internal::option_tuple, mm};
-use monostate::MustBe;
 use serde::{Deserialize, Serialize};
+
+fn is_default(hide: &bool) -> bool {
+	*hide == false
+}
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "pin_names")]
@@ -8,14 +11,22 @@ pub struct PinNames {
 	#[serde(with = "option_tuple")]
 	pub offset: Option<mm>,
 
-	hide: MustBe!(true)
+	#[serde(default, skip_serializing_if = "is_default")]
+	pub hide: bool
 }
 
 impl PinNames {
-	pub const fn new(offset: Option<mm>) -> Self {
+	pub const fn new_with_offset(offset: mm) -> Self {
 		Self {
-			offset,
-			hide: MustBe!(true)
+			offset: Some(offset),
+			hide: false
+		}
+	}
+
+	pub const fn new_hidden() -> Self {
+		Self {
+			offset: None,
+			hide: true
 		}
 	}
 }
@@ -26,14 +37,14 @@ mod tests {
 	use crate::{sexpr_test_case, Unit};
 
 	sexpr_test_case! {
-		name: pin_names_no_offset,
+		name: pin_names_hidden,
 		input: r#"(pin_names hide)"#,
-		value: PinNames::new(None)
+		value: PinNames::new_hidden()
 	}
 
 	sexpr_test_case! {
 		name: pin_names_with_offset,
-		input: r#"(pin_names (offset 0.508) hide)"#,
-		value: PinNames::new(Some(0.508.mm()))
+		input: r#"(pin_names (offset 0.508))"#,
+		value: PinNames::new_with_offset(0.508.mm())
 	}
 }

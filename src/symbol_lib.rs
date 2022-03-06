@@ -2,7 +2,7 @@
 //!
 //! This module defines syntax that is used by the symbol library.
 
-use crate::internal::tuple;
+use crate::{internal::tuple, symbol::Symbol};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -27,7 +27,10 @@ pub struct SymbolLib {
 	pub version: Version,
 
 	#[serde(with = "tuple")]
-	pub generator: String
+	pub generator: String,
+
+	#[serde(default, rename = "")]
+	pub symbols: Vec<Symbol>
 }
 
 impl SymbolLib {
