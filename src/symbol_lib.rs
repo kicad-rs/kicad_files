@@ -29,3 +29,9 @@ pub struct SymbolLib {
 	#[serde(with = "tuple")]
 	pub generator: String
 }
+
+impl SymbolLib {
+	pub fn from_str(s: &str) -> Result<Self, serde_sexpr::de::Error> {
+		serde_sexpr::from_str(s)
+	}
+}

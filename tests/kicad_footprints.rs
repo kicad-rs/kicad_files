@@ -3,28 +3,17 @@ use std::{
 	fs::{self, File},
 	io::{self, Read as _, Write as _},
 	path::PathBuf,
-	time::{Duration, Instant}
+	time::Instant
 };
-use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor as _};
 
-fn write_ok(stdout: &mut StandardStream, duration: Duration) -> io::Result<()> {
-	stdout.set_color(ColorSpec::new().set_fg(Some(Color::Green)))?;
-	write!(stdout, " ok")?;
-	stdout.set_color(ColorSpec::new().set_fg(None))?;
-	writeln!(stdout, " ({:.3} secs)", duration.as_secs_f32())?;
-	Ok(())
+mod util {
+	include!("util/mod.rs");
 }
-
-fn write_fail(stdout: &mut StandardStream) -> io::Result<()> {
-	stdout.set_color(ColorSpec::new().set_fg(Some(Color::Red)))?;
-	writeln!(stdout, " fail")?;
-	stdout.set_color(ColorSpec::new().set_fg(None))?;
-	Ok(())
-}
+use util::*;
 
 #[test]
 fn test_deserialize_kicad_footprints() -> io::Result<()> {
-	let mut stdout = StandardStream::stdout(ColorChoice::Always);
+	let mut stdout = init_stdout();
 
 	let cargo_dir: PathBuf = env!("CARGO_MANIFEST_DIR").parse().unwrap();
 	let dir = cargo_dir.join("tests").join("kicad-footprints");
@@ -60,16 +49,14 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 								}
 								ok = false;
 								fp_fail += 1;
-								stdout.set_color(
-									ColorSpec::new().set_fg(Some(Color::Red))
-								)?;
+								red(&mut stdout)?;
 								writeln!(
 									stdout,
 									"\t\t{}: {:?}",
 									path.strip_prefix(&cargo_dir).unwrap().display(),
 									err
 								)?;
-								stdout.set_color(ColorSpec::new().set_fg(None))?;
+								white(&mut stdout)?;
 							}
 						},
 						_ => {}
@@ -88,23 +75,7 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 		panic!("No test data found, did you forget to initialize git submodules?");
 	}
 
-	writeln!(stdout)?;
-	write!(stdout, "\ttest result: ")?;
-	if fp_fail == 0 {
-		stdout.set_color(ColorSpec::new().set_fg(Some(Color::Green)))?;
-		write!(stdout, "ok")?;
-	} else {
-		stdout.set_color(ColorSpec::new().set_fg(Some(Color::Red)))?;
-		write!(stdout, "FAILED")?;
-	}
-	stdout.set_color(ColorSpec::new().set_fg(None))?;
-	writeln!(
-		stdout,
-		". {} passed; {} failed",
-		fp_count - fp_fail,
-		fp_fail
-	)?;
-	writeln!(stdout)?;
+	write_summary(&mut stdout, fp_count, fp_fail)?;
 
 	if fp_fail != 0 {
 		panic!("fail");
