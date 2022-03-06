@@ -5,42 +5,39 @@
 
 use crate::internal::{option_tuple, yes_no};
 use serde::{Deserialize, Serialize};
+use serde_sexpr::untagged;
 
+mod arc;
+mod circle;
+mod curve;
 mod fill;
 mod pin_names;
+mod pin_numbers;
+mod polyline;
 mod property;
+mod rectangle;
 mod stroke;
 
+pub use arc::Arc;
+pub use circle::Circle;
+pub use curve::Curve;
 pub use fill::{Fill, FillType};
 pub use pin_names::PinNames;
+pub use polyline::PolyLine;
 pub use property::{Property, PropertyPosition};
+pub use rectangle::Rectangle;
 pub use stroke::{Stroke, StrokeType};
 
-mod pin_numbers {
-	use serde::{Deserialize, Deserializer, Serialize, Serializer};
+untagged! {
+	#[derive(Clone, Debug, PartialEq)]
+	pub enum SymbolContent {
+		Property(Property),
+		Symbol(Symbol),
 
-	#[derive(Deserialize, Serialize)]
-	#[serde(deny_unknown_fields, rename = "pin_numbers")]
-	struct PinNumbers {
-		hide: bool
-	}
-
-	pub(super) fn deserialize<'de, D>(deserializer: D) -> Result<bool, D::Error>
-	where
-		D: Deserializer<'de>
-	{
-		serde_sexpr::Option::deserialize(deserializer).map(|v| {
-			v.map(|pin_numbers: PinNumbers| pin_numbers.hide)
-				.unwrap_or(false)
-		})
-	}
-
-	pub(super) fn serialize<S>(this: &bool, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer
-	{
-		this.then(|| PinNumbers { hide: true })
-			.serialize(serializer)
+		Arc(Arc),
+		Circle(Circle),
+		Curve(Curve),
+		Rectangle(Rectangle)
 	}
 }
 
@@ -62,13 +59,16 @@ pub struct Symbol {
 	pub in_bom: bool,
 
 	#[serde(with = "yes_no")]
-	pub on_board: bool
+	pub on_board: bool,
+
+	#[serde(default, rename = "")]
+	pub content: Vec<SymbolContent>
 }
 
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::sexpr_test_case;
+	use crate::{sexpr_test_case, Deg, Unit};
 
 	sexpr_test_case! {
 		name: empty_symbol,
@@ -79,7 +79,29 @@ mod tests {
 			hide_pin_numbers: false,
 			pin_names: None,
 			in_bom: true,
-			on_board: true
+			on_board: true,
+			content: vec![]
+		}
+	}
+
+	sexpr_test_case! {
+		name: empty_symbol_with_property,
+		input: r#"(symbol "empty symbol" (in_bom yes) (on_board yes) (property Reference U (id 0) (at -5.08 5.08 0) (effects (font (size 1.27 1.27)))))"#,
+		value: Symbol {
+			id: "empty symbol".into(),
+			extends: None,
+			hide_pin_numbers: false,
+			pin_names: None,
+			in_bom: true,
+			on_board: true,
+			content: vec![SymbolContent::Property(Property::new(
+				Property::REFERENCE_KEY,
+				"U",
+				Property::REFERENCE_ID,
+				PropertyPosition::new(-5.08.mm(), 5.08.mm(), 0.0.deg()),
+				1.27.mm(),
+				false
+			))]
 		}
 	}
 }
