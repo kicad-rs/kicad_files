@@ -3,7 +3,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
-enum YesNo {
+pub(super) enum YesNo {
 	Yes,
 	No
 }

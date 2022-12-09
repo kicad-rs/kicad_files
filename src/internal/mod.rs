@@ -1,5 +1,6 @@
 pub(crate) mod option_tuple;
 pub(crate) mod option_unit;
+pub(crate) mod option_yes_no;
 pub(crate) mod rename;
 pub(crate) mod tuple;
 pub(crate) mod tuple_or_default;

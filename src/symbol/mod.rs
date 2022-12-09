@@ -3,7 +3,7 @@
 //! This module defines all syntax that is shared across the symbol library and
 //! schematic file formats.
 
-use crate::internal::{option_tuple, yes_no};
+use crate::internal::{option_tuple, option_yes_no};
 use serde::{Deserialize, Serialize};
 use serde_sexpr::untagged;
 
@@ -11,6 +11,7 @@ mod arc;
 mod circle;
 mod curve;
 mod fill;
+mod pin;
 mod pin_names;
 mod pin_numbers;
 mod polyline;
@@ -22,6 +23,7 @@ pub use arc::Arc;
 pub use circle::Circle;
 pub use curve::Curve;
 pub use fill::{Fill, FillType};
+pub use pin::{Pin, PinElectricalType, PinGraphicalStyle};
 pub use pin_names::PinNames;
 pub use polyline::PolyLine;
 pub use property::{Property, PropertyPosition};
@@ -32,12 +34,14 @@ untagged! {
 	#[derive(Clone, Debug, PartialEq)]
 	pub enum SymbolContent {
 		Property(Property),
-		Symbol(Symbol),
+		Symbol(InnerSymbol),
+		Pin(Pin),
 
 		Arc(Arc),
 		Circle(Circle),
 		Curve(Curve),
-		Rectangle(Rectangle)
+		Rectangle(Rectangle),
+		Polyline(PolyLine)
 	}
 }
 
@@ -55,11 +59,22 @@ pub struct Symbol {
 	#[serde(with = "serde_sexpr::Option")]
 	pub pin_names: Option<PinNames>,
 
-	#[serde(with = "yes_no")]
-	pub in_bom: bool,
+	// TODO this is only optional if extends is being used
+	#[serde(with = "option_yes_no")]
+	pub in_bom: Option<bool>,
 
-	#[serde(with = "yes_no")]
-	pub on_board: bool,
+	// TODO this is only optional if extends is being used
+	#[serde(with = "option_yes_no")]
+	pub on_board: Option<bool>,
+
+	#[serde(default, rename = "")]
+	pub content: Vec<SymbolContent>
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(deny_unknown_fields, rename = "symbol")]
+pub struct InnerSymbol {
+	pub id: String,
 
 	#[serde(default, rename = "")]
 	pub content: Vec<SymbolContent>
