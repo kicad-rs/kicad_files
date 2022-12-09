@@ -34,7 +34,7 @@ impl PropertyPosition {
 	}
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "property")]
 pub struct Property {
 	pub key: String,

@@ -1,5 +1,8 @@
 #![warn(rust_2018_idioms, unreachable_pub)]
-#![forbid(unsafe_code)]
+#![forbid(elided_lifetimes_in_paths, unsafe_code)]
+// clippy wants me to write -(1.0.mm()) instead of -1.0.mm().
+// I don't think so
+#![allow(clippy::precedence)]
 
 pub use millimeter::{mm, Unit};
 use uuid::Uuid;

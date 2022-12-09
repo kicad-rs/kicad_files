@@ -5,12 +5,7 @@ pub(crate) fn deserialize<'de, D>(deserializer: D) -> Result<Option<bool>, D::Er
 where
 	D: Deserializer<'de>
 {
-	option_tuple::deserialize(deserializer).map(|opt| {
-		opt.map(|yn: YesNo| match yn {
-			YesNo::Yes => true,
-			YesNo::No => false
-		})
-	})
+	option_tuple::deserialize(deserializer).map(|opt| opt.map(YesNo::into))
 }
 
 pub(crate) fn serialize<S>(
@@ -20,8 +15,5 @@ pub(crate) fn serialize<S>(
 where
 	S: Serializer
 {
-	option_tuple::serialize(
-		&this.map(|b| b.then(|| YesNo::Yes).unwrap_or(YesNo::No)),
-		serializer
-	)
+	option_tuple::serialize(&this.map(YesNo::from), serializer)
 }

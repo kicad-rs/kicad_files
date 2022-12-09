@@ -43,7 +43,7 @@ fn test_deserialize_kicad_footprints() -> io::Result<()> {
 							drop(file);
 
 							fp_count += 1;
-							if let Err(err) = Footprint::from_str(&input) {
+							if let Err(err) = input.parse::<Footprint>() {
 								if ok {
 									write_fail(&mut stdout)?;
 								}

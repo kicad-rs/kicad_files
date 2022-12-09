@@ -40,7 +40,7 @@ fn test_deserialize_kicad_symbols() -> io::Result<()> {
 				drop(file);
 
 				fp_count += 1;
-				if let Err(err) = SymbolLib::from_str(&input) {
+				if let Err(err) = input.parse::<SymbolLib>() {
 					write_fail(&mut stdout)?;
 					ok = false;
 					fp_fail += 1;

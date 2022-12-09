@@ -2,10 +2,10 @@ use crate::{internal::option_tuple, mm};
 use serde::{Deserialize, Serialize};
 
 fn is_default(hide: &bool) -> bool {
-	*hide == false
+	!(*hide)
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "pin_names")]
 pub struct PinNames {
 	#[serde(with = "option_tuple")]

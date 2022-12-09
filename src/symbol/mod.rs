@@ -93,8 +93,8 @@ mod tests {
 			extends: None,
 			hide_pin_numbers: false,
 			pin_names: None,
-			in_bom: true,
-			on_board: true,
+			in_bom: Some(true),
+			on_board: Some(true),
 			content: vec![]
 		}
 	}
@@ -107,8 +107,8 @@ mod tests {
 			extends: None,
 			hide_pin_numbers: false,
 			pin_names: None,
-			in_bom: true,
-			on_board: true,
+			in_bom: Some(true),
+			on_board: Some(true),
 			content: vec![SymbolContent::Property(Property::new(
 				Property::REFERENCE_KEY,
 				"U",

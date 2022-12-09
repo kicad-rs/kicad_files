@@ -1,3 +1,9 @@
+#![allow(
+	clippy::derive_hash_xor_eq,
+	clippy::derive_ord_xor_partial_ord,
+	clippy::manual_range_contains
+)]
+
 use core::{
 	cmp::{Eq, Ord, Ordering},
 	fmt::{self, Debug, Display, Formatter},

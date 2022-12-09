@@ -92,9 +92,7 @@ impl<'de> Deserialize<'de> for Paper {
 	{
 		let def = <PaperDef<'de>>::deserialize(deserializer)?;
 		let size = match (def.size, def.width, def.height) {
-			(Some(size), None, None) => {
-				size.parse().map_err(|err| D::Error::custom(err))?
-			},
+			(Some(size), None, None) => size.parse().map_err(D::Error::custom)?,
 			(None, Some(width), Some(height)) => PaperSize::Custom { width, height },
 			_ => return Err(D::Error::custom("invalid paper size"))
 		};

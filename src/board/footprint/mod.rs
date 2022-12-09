@@ -30,6 +30,7 @@ pub use pad::{
 pub use poly::Polygon;
 pub use primitives::Primitives;
 pub use rect::Rectangle;
+use std::str::FromStr;
 pub use text::Text;
 
 serde_sexpr::untagged! {
@@ -171,8 +172,10 @@ serde_sexpr::untagged! {
 	}
 }
 
-impl Footprint {
-	pub fn from_str(s: &str) -> Result<Self, serde_sexpr::de::Error> {
+impl FromStr for Footprint {
+	type Err = serde_sexpr::de::Error;
+
+	fn from_str(s: &str) -> Result<Self, serde_sexpr::de::Error> {
 		let fp: FootprintOrModule = serde_sexpr::from_str(s)?;
 		Ok(match fp {
 			FootprintOrModule::Footprint(fp) => fp,

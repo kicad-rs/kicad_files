@@ -15,7 +15,7 @@ impl Default for FillType {
 	}
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "fill")]
 pub struct Fill {
 	#[serde(rename = "type", with = "tuple")]

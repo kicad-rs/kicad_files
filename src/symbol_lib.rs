@@ -4,6 +4,7 @@
 
 use crate::{internal::tuple, symbol::Symbol};
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "version")]
@@ -33,8 +34,10 @@ pub struct SymbolLib {
 	pub symbols: Vec<Symbol>
 }
 
-impl SymbolLib {
-	pub fn from_str(s: &str) -> Result<Self, serde_sexpr::de::Error> {
+impl FromStr for SymbolLib {
+	type Err = serde_sexpr::de::Error;
+
+	fn from_str(s: &str) -> Result<Self, serde_sexpr::de::Error> {
 		serde_sexpr::from_str(s)
 	}
 }
