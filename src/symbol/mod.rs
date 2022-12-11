@@ -18,6 +18,7 @@ mod polyline;
 mod property;
 mod rectangle;
 mod stroke;
+mod text;
 
 pub use arc::Arc;
 pub use circle::Circle;
@@ -29,6 +30,7 @@ pub use polyline::PolyLine;
 pub use property::{Property, PropertyPosition};
 pub use rectangle::Rectangle;
 pub use stroke::{Stroke, StrokeType};
+pub use text::Text;
 
 untagged! {
 	#[derive(Clone, Debug, PartialEq)]
@@ -41,7 +43,8 @@ untagged! {
 		Circle(Circle),
 		Curve(Curve),
 		Rectangle(Rectangle),
-		Polyline(PolyLine)
+		Polyline(PolyLine),
+		Text(Text)
 	}
 }
 
