@@ -91,6 +91,16 @@ pub struct PinNumber {
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields, rename = "alternate")]
+pub struct PinAlternate {
+	pub name: String,
+
+	pub electrical_type: PinElectricalType,
+
+	pub graphical_style: PinGraphicalStyle
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "pin")]
 pub struct Pin {
 	pub electrical_type: PinElectricalType,
@@ -106,7 +116,10 @@ pub struct Pin {
 
 	pub name: PinName,
 
-	pub number: PinNumber
+	pub number: PinNumber,
+
+	#[serde(with = "serde_sexpr::Option")]
+	pub alternate: Option<PinAlternate>
 }
 
 #[cfg(test)]
@@ -130,7 +143,8 @@ mod tests {
 			number: PinNumber {
 				number: "1".to_owned(),
 				effects: Effects::new(Font::new(1.27.mm()))
-			}
+			},
+			alternate: None
 		}
 	}
 
@@ -150,7 +164,8 @@ mod tests {
 			number: PinNumber {
 				number: "1".to_owned(),
 				effects: Effects::new(Font::new(1.27.mm()))
-			}
+			},
+			alternate: None
 		}
 	}
 }

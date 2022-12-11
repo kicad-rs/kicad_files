@@ -24,7 +24,7 @@ pub use arc::Arc;
 pub use circle::Circle;
 pub use curve::Curve;
 pub use fill::{Fill, FillType};
-pub use pin::{Pin, PinElectricalType, PinGraphicalStyle};
+pub use pin::{Pin, PinAlternate, PinElectricalType, PinGraphicalStyle};
 pub use pin_names::PinNames;
 pub use polyline::PolyLine;
 pub use property::{Property, PropertyPosition};
@@ -97,6 +97,7 @@ mod tests {
 		value: Symbol {
 			id: "empty symbol".into(),
 			extends: None,
+			power: false,
 			hide_pin_numbers: false,
 			pin_names: None,
 			in_bom: Some(true),
@@ -111,6 +112,7 @@ mod tests {
 		value: Symbol {
 			id: "empty symbol".into(),
 			extends: None,
+			power: false,
 			hide_pin_numbers: false,
 			pin_names: None,
 			in_bom: Some(true),
