@@ -25,12 +25,19 @@ jobs:
       fail-fast: false
       matrix:
         rust:
-          - toolchain: "stable"
-          - toolchain: "nightly"
-    name: "Test (Rust ${{matrix.rust.toolchain}})"
+          - name: Stable
+            toolchain: "stable"
+            nightly: false
+          - name: Nightly
+            toolchain: "nightly"
+            nightly: true
     runs-on: ubuntu-latest
+    name: "Test (Rust ${{matrix.rust.toolchain}})"
+    continue-on-error: ${{matrix.rust.nightly}}
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: "${{matrix.rust.toolchain}}"
