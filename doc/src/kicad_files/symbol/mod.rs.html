@@ -130,6 +130,8 @@
 <span id="128">128</span>
 <span id="129">129</span>
 <span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
 </pre><pre class="rust"><code><span class="doccomment">//! **Schematic and Symbol Library Common Syntax**
 //!
 //! This module defines all syntax that is shared across the symbol library and
@@ -156,7 +158,9 @@
 <span class="kw">pub use </span>circle::Circle;
 <span class="kw">pub use </span>curve::Curve;
 <span class="kw">pub use </span>fill::{Fill, FillType};
-<span class="kw">pub use </span>pin::{Pin, PinAlternate, PinElectricalType, PinGraphicalStyle};
+<span class="kw">pub use </span>pin::{
+	Pin, PinAlternate, PinElectricalType, PinGraphicalStyle, PinName, PinNumber
+};
 <span class="kw">pub use </span>pin_names::PinNames;
 <span class="kw">pub use </span>polyline::PolyLine;
 <span class="kw">pub use </span>property::{Property, PropertyPosition};
