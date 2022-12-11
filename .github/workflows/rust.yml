@@ -1,0 +1,113 @@
+name: Rust
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  release:
+    types: [created]
+
+env:
+  RUST_BACKTRACE: "1"
+  RUSTDOCFLAGS: "--default-theme ayu"
+  # speed up build by using clang/lld
+  CC: "clang-14"
+  CXX: "clang++-14"
+  LD: "clang-14"
+  LDFLAGS: "-fuse-ld=lld-14"
+  RUSTFLAGS: "-C linker=clang-14 -C link-arg=-fuse-ld=lld-14"
+
+jobs:
+  # ### Test ###
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        rust:
+          - toolchain: "stable"
+          - toolchain: "nightly"
+    name: "Test (Rust ${{matrix.rust.toolchain}})"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: "${{matrix.rust.toolchain}}"
+        id: "rust-toolchain"
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/git
+            ~/.cargo/registry
+            target
+          key: "${{runner.os}} Rust ${{steps.rust-toolchain.outputs.cachekey}}"
+      - run: cargo test
+
+  # ### Rustfmt ###
+  rustfmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
+      - run: cargo fmt --all -- --check
+  
+  # ### Documentation ###
+  doc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        id: "rust-toolchain"
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/git
+            ~/.cargo/registry
+            target
+          key: "${{runner.os}} RustDoc ${{steps.rust-toolchain.outputs.cachekey}}"
+      - run: cargo doc --no-deps
+      - run: tar cfj rustdoc.tar.bz2 target/doc/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: rustdoc
+          path: rustdoc.tar.xz
+  
+  # ### GitHub Pages ###
+  pages:
+    runs-on: ubuntu-latest
+    needs: [doc]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+      - uses: actions/download-artifact@v3
+        with:
+          name: rustdoc
+      - run: |
+          test ! -d ./doc || rm -r ./doc
+          tar xfj rustdoc.tar.bz2 --strip-components=1
+          rm rustdoc.tar.bz2
+          git add ./doc || true
+          git status
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "GitHub Pages for ${{github.sha}}"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
+          commit_author: "GitHub Actions <actions@github.com>"
+
+  # ### Publish ###
+  publish:
+    runs-on: ubuntu-latest
+    needs: [test, rustfmt, doc]
+    if: github.event_name == 'release'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo publish 
+        env:
+          CARGO_REGISTRY_TOKEN: ${{secrets.CARGO_REGISTRY_TOKEN}}
