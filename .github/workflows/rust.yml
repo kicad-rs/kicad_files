@@ -80,7 +80,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: rustdoc
-          path: rustdoc.tar.xz
+          path: rustdoc.tar.bz2
   
   # ### GitHub Pages ###
   pages:
