@@ -24,7 +24,9 @@ pub use arc::Arc;
 pub use circle::Circle;
 pub use curve::Curve;
 pub use fill::{Fill, FillType};
-pub use pin::{Pin, PinAlternate, PinElectricalType, PinGraphicalStyle};
+pub use pin::{
+	Pin, PinAlternate, PinElectricalType, PinGraphicalStyle, PinName, PinNumber
+};
 pub use pin_names::PinNames;
 pub use polyline::PolyLine;
 pub use property::{Property, PropertyPosition};
