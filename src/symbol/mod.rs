@@ -3,7 +3,7 @@
 //! This module defines all syntax that is shared across the symbol library and
 //! schematic file formats.
 
-use crate::internal::{option_tuple, option_yes_no};
+use crate::internal::{option_tuple, option_unit, option_yes_no};
 use serde::{Deserialize, Serialize};
 use serde_sexpr::untagged;
 
@@ -55,6 +55,9 @@ pub struct Symbol {
 
 	#[serde(with = "option_tuple")]
 	pub extends: Option<String>,
+
+	#[serde(with = "option_unit")]
+	pub power: bool,
 
 	#[serde(with = "pin_numbers")]
 	pub hide_pin_numbers: bool,
