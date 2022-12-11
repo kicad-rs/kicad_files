@@ -4,6 +4,16 @@
 // I don't think so
 #![allow(clippy::precedence)]
 
+//! A library to read KiCAD v6 file formats.
+//! 
+//! **This crate is not affiliated with KiCAD.**
+//! 
+//! Currently, the following file formats are supported:
+//! 
+//!  - KiCAD v5 Footprint file (`*.kicad_mod`), starting with `(module`
+//!  - KiCAD v6 Footprint file (`*.kicad_mod`), starting with `(footprint`
+//!  - KiCAD v6 Symbol library (`*.kicad_sym`), starting with `(kicad_symbol_lib`
+
 pub use millimeter::{mm, Unit};
 use uuid::Uuid;
 
