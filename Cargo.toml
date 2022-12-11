@@ -24,7 +24,7 @@ rgb = { version = "0.8.31", default-features = false }
 serde = { version = "1.0.132", features = ["derive"] }
 serde_sexpr = { package = "serde_kicad_sexpr", version = "0.1" }
 thiserror = "1.0"
-uuid = { version = "0.8.2", features = ["serde"] }
+uuid = { version = "1.2.2", features = ["serde"] }
 
 [dev-dependencies]
 pretty_assertions = "1.0"
