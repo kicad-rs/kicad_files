@@ -42,6 +42,8 @@
 <span id="40">40</span>
 <span id="41">41</span>
 <span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
 </pre><pre class="rust"><code><span class="attribute">#![warn(rust_2018_idioms, unreachable_pub)]
 #![forbid(elided_lifetimes_in_paths, unsafe_code)]
 </span><span class="comment">// clippy wants me to write -(1.0.mm()) instead of -1.0.mm().
@@ -57,6 +59,7 @@
 //!  - KiCAD v5 Footprint file (`*.kicad_mod`), starting with `(module`
 //!  - KiCAD v6 Footprint file (`*.kicad_mod`), starting with `(footprint`
 //!  - KiCAD v6 Symbol library (`*.kicad_sym`), starting with `(kicad_symbol_lib`
+//!  - KiCAD v6 Schematic file (`*.kicad_sch`), starting with `(kicad_sch`
 
 </span><span class="kw">pub use </span>millimeter::{mm, Unit};
 <span class="kw">use </span>uuid::Uuid;
@@ -70,6 +73,7 @@
 
 <span class="kw">pub mod </span>board;
 <span class="kw">pub mod </span>common;
+<span class="kw">pub mod </span>schematic;
 <span class="kw">pub mod </span>symbol;
 <span class="kw">pub mod </span>symbol_lib;
 
