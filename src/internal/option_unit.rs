@@ -1,3 +1,5 @@
+//! Custom (de)serializer that transforms the boolean into an Option<()>.
+
 use serde::{Deserializer, Serializer};
 
 pub(crate) fn deserialize<'de, D>(deserializer: D) -> Result<bool, D::Error>

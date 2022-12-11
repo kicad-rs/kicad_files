@@ -1,3 +1,5 @@
+//! A custom (de)serializer that places the value in a single-element tuple.
+
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 pub(crate) fn deserialize<'de, D, T>(deserializer: D) -> Result<T, D::Error>

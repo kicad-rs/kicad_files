@@ -1,3 +1,5 @@
+//! Custom (de)serializer that deserializes an Option<bool> as None, (name yes) or (name no).
+
 use super::{option_tuple, yes_no::YesNo};
 use serde::{Deserializer, Serializer};
 

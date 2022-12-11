@@ -1,3 +1,5 @@
+//! A custom (de)serializer that maps the optional value to a single-element tuple.
+
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 pub(crate) fn deserialize<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
