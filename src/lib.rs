@@ -13,6 +13,7 @@
 //!  - KiCAD v5 Footprint file (`*.kicad_mod`), starting with `(module`
 //!  - KiCAD v6 Footprint file (`*.kicad_mod`), starting with `(footprint`
 //!  - KiCAD v6 Symbol library (`*.kicad_sym`), starting with `(kicad_symbol_lib`
+//!  - KiCAD v6 Schematic file (`*.kicad_sch`), starting with `(kicad_sch`
 
 pub use millimeter::{mm, Unit};
 use uuid::Uuid;
@@ -26,6 +27,7 @@ mod internal;
 
 pub mod board;
 pub mod common;
+pub mod schematic;
 pub mod symbol;
 pub mod symbol_lib;
 
