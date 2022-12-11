@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":[["board","Board Common Syntax"],["common","Common Syntax"],["symbol","Schematic and Symbol Library Common Syntax"],["symbol_lib","Symbol Library"]],"struct":[["deg",""],["mm",""]],"trait":[["Deg",""],["Unit",""]]};

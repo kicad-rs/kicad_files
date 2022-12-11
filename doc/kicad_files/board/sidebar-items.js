@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":[["ConnectPads",""]],"mod":[["footprint",""],["graphic",""]],"struct":[["Layer",""],["Timestamp",""]]};
