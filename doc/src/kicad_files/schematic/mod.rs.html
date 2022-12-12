@@ -37,6 +37,25 @@
 <span id="35">35</span>
 <span id="36">36</span>
 <span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
 </pre><pre class="rust"><code><span class="doccomment">//! **Schematic File Format**
 //!
 //! This module defines all the syntax used in the schematic file format that is not
@@ -44,7 +63,18 @@
 
 </span><span class="kw">use </span><span class="kw">crate</span>::internal::{tuple, tuple_or_default};
 <span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>serde_sexpr::untagged;
 <span class="kw">use </span>uuid::Uuid;
+
+<span class="kw">mod </span>bus_entry;
+<span class="kw">mod </span>junction;
+<span class="kw">mod </span>lib_symbols;
+<span class="kw">mod </span>no_connect;
+
+<span class="kw">pub use </span>bus_entry::BusEntry;
+<span class="kw">pub use </span>junction::Junction;
+<span class="kw">pub use </span>lib_symbols::LibSymbols;
+<span class="kw">pub use </span>no_connect::NoConnect;
 
 <span class="attribute">#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = <span class="string">&quot;version&quot;</span>)]
@@ -62,7 +92,14 @@
 	}
 }
 
-<span class="attribute">#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+<span class="macro">untagged! </span>{
+	<span class="attribute">#[derive(Clone, Debug, PartialEq)]
+	</span><span class="kw">pub enum </span>SchematicContent {
+		Junction(Junction)
+	}
+}
+
+<span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields, rename = <span class="string">&quot;kicad_sch&quot;</span>)]
 </span><span class="kw">pub struct </span>Schematic {
 	<span class="kw">pub </span>version: Version,
@@ -71,8 +108,9 @@
 	</span><span class="kw">pub </span>generator: String,
 
 	<span class="attribute">#[serde(with = <span class="string">&quot;tuple_or_default&quot;</span>, skip_serializing_if = <span class="string">&quot;crate::skip_uuid&quot;</span>)]
-	</span><span class="kw">pub </span>uuid: Uuid
-	<span class="comment">// TODO
-</span>}
+	</span><span class="kw">pub </span>uuid: Uuid,
+
+	<span class="kw">pub </span>lib_symbols: LibSymbols
+}
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="kicad_files" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

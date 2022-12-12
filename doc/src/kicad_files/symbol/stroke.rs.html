@@ -56,15 +56,10 @@
 <span id="54">54</span>
 <span id="55">55</span>
 <span id="56">56</span>
-<span id="57">57</span>
-<span id="58">58</span>
-<span id="59">59</span>
-<span id="60">60</span>
-<span id="61">61</span>
-<span id="62">62</span>
-<span id="63">63</span>
-</pre><pre class="rust"><code><span class="kw">use crate</span>::{internal::tuple, mm};
-<span class="kw">use </span>rgb::RGBA;
+</pre><pre class="rust"><code><span class="kw">use crate</span>::{
+	internal::{tuple, ColorDef},
+	mm, Color
+};
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 
 <span class="attribute">#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -83,15 +78,6 @@
 	}
 }
 
-<span class="attribute">#[derive(Deserialize, Serialize)]
-#[serde(remote = <span class="string">&quot;RGBA::&lt;u8, f32&gt;&quot;</span>, deny_unknown_fields, rename = <span class="string">&quot;color&quot;</span>)]
-</span><span class="kw">struct </span>ColorDef {
-	r: u8,
-	g: u8,
-	b: u8,
-	a: f32
-}
-
 <span class="attribute">#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = <span class="string">&quot;stroke&quot;</span>)]
 </span><span class="kw">pub struct </span>Stroke {
@@ -102,7 +88,7 @@
 	</span><span class="kw">pub </span>ty: StrokeType,
 
 	<span class="attribute">#[serde(with = <span class="string">&quot;ColorDef&quot;</span>)]
-	</span><span class="kw">pub </span>color: RGBA&lt;u8, f32&gt;
+	</span><span class="kw">pub </span>color: Color
 }
 
 <span class="kw">impl </span>Stroke {
@@ -110,7 +96,7 @@
 		<span class="self">Self </span>{
 			width,
 			ty,
-			color: RGBA::new_alpha(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.0</span>)
+			color: Color::new_alpha(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.0</span>)
 		}
 	}
 }

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Schematic",""],["Version",""]]};
+window.SIDEBAR_ITEMS = {"enum":[["SchematicContent",""]],"struct":[["BusEntry",""],["Junction",""],["LibSymbols",""],["NoConnect",""],["Schematic",""],["Version",""]]};

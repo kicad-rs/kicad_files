@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["JustifyHoriz",""],["JustifyVert",""],["PaperSize",""]],"struct":[["Effects",""],["Font",""],["FontSize",""],["Justify",""],["Paper",""],["Point",""],["PointList",""],["Position",""],["TitleBlock",""]]};
+window.SIDEBAR_ITEMS = {"enum":[["JustifyHoriz",""],["JustifyVert",""],["PaperSize",""]],"struct":[["Effects",""],["Font",""],["Justify",""],["Paper",""],["Point",""],["PointList",""],["Position",""],["Size",""],["TitleBlock",""]]};
