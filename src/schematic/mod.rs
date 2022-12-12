@@ -5,7 +5,18 @@
 
 use crate::internal::{tuple, tuple_or_default};
 use serde::{Deserialize, Serialize};
+use serde_sexpr::untagged;
 use uuid::Uuid;
+
+mod bus_entry;
+mod junction;
+mod lib_symbols;
+mod no_connect;
+
+pub use bus_entry::BusEntry;
+pub use junction::Junction;
+pub use lib_symbols::LibSymbols;
+pub use no_connect::NoConnect;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "version")]
@@ -23,7 +34,14 @@ impl Version {
 	}
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+untagged! {
+	#[derive(Clone, Debug, PartialEq)]
+	pub enum SchematicContent {
+		Junction(Junction)
+	}
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields, rename = "kicad_sch")]
 pub struct Schematic {
 	pub version: Version,
@@ -32,6 +50,7 @@ pub struct Schematic {
 	pub generator: String,
 
 	#[serde(with = "tuple_or_default", skip_serializing_if = "crate::skip_uuid")]
-	pub uuid: Uuid
-	// TODO
+	pub uuid: Uuid,
+
+	pub lib_symbols: LibSymbols
 }

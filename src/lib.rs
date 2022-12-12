@@ -16,6 +16,7 @@
 //!  - KiCAD v6 Schematic file (`*.kicad_sch`), starting with `(kicad_sch`
 
 pub use millimeter::{mm, Unit};
+use rgb::RGBA;
 use uuid::Uuid;
 
 #[cfg(test)]
@@ -32,6 +33,8 @@ pub mod symbol;
 pub mod symbol_lib;
 
 pub use degree::{deg, Deg};
+
+pub type Color = RGBA<u8, f32>;
 
 #[cfg(not(feature = "skip_nil_uuids"))]
 fn skip_uuid(_: &Uuid) -> bool {

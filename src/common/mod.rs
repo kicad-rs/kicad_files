@@ -10,13 +10,15 @@ mod paper;
 mod point;
 mod point_list;
 mod position;
+mod size;
 mod title_block;
 
 pub use effects::Effects;
-pub use font::{Font, FontSize};
+pub use font::Font;
 pub use justify::{Justify, JustifyHoriz, JustifyVert};
 pub use paper::{Paper, PaperSize};
 pub use point::Point;
 pub use point_list::PointList;
 pub use position::Position;
+pub use size::Size;
 pub use title_block::TitleBlock;

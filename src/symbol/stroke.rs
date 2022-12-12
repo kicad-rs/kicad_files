@@ -1,5 +1,7 @@
-use crate::{internal::tuple, mm};
-use rgb::RGBA;
+use crate::{
+	internal::{tuple, ColorDef},
+	mm, Color
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -18,15 +20,6 @@ impl Default for StrokeType {
 	}
 }
 
-#[derive(Deserialize, Serialize)]
-#[serde(remote = "RGBA::<u8, f32>", deny_unknown_fields, rename = "color")]
-struct ColorDef {
-	r: u8,
-	g: u8,
-	b: u8,
-	a: f32
-}
-
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "stroke")]
 pub struct Stroke {
@@ -37,7 +30,7 @@ pub struct Stroke {
 	pub ty: StrokeType,
 
 	#[serde(with = "ColorDef")]
-	pub color: RGBA<u8, f32>
+	pub color: Color
 }
 
 impl Stroke {
@@ -45,7 +38,7 @@ impl Stroke {
 		Self {
 			width,
 			ty,
-			color: RGBA::new_alpha(0, 0, 0, 0.0)
+			color: Color::new_alpha(0, 0, 0, 0.0)
 		}
 	}
 }
