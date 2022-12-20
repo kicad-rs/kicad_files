@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"kicad_files":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.65.0/core/ops/deref/trait.Deref.html\" title=\"trait core::ops::deref::Deref\">Deref</a> for <a class=\"struct\" href=\"kicad_files/common/struct.PointList.html\" title=\"struct kicad_files::common::PointList\">PointList</a>"]]
+"kicad_files":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.66.0/core/ops/deref/trait.Deref.html\" title=\"trait core::ops::deref::Deref\">Deref</a> for <a class=\"struct\" href=\"kicad_files/common/struct.PointList.html\" title=\"struct kicad_files::common::PointList\">PointList</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
