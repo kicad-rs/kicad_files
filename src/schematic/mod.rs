@@ -8,15 +8,25 @@ use serde::{Deserialize, Serialize};
 use serde_sexpr::untagged;
 use uuid::Uuid;
 
+mod bus;
 mod bus_entry;
 mod junction;
+mod label;
 mod lib_symbols;
 mod no_connect;
+mod polyline;
+mod text;
+mod wire;
 
+pub use bus::Bus;
 pub use bus_entry::BusEntry;
 pub use junction::Junction;
+pub use label::Label;
 pub use lib_symbols::LibSymbols;
 pub use no_connect::NoConnect;
+pub use polyline::Polyline;
+pub use text::Text;
+pub use wire::Wire;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields, rename = "version")]
