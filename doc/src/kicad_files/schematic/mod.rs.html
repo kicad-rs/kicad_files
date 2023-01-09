@@ -66,6 +66,13 @@
 <span id="64">64</span>
 <span id="65">65</span>
 <span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
 </pre><pre class="rust"><code><span class="doccomment">//! **Schematic File Format**
 //!
 //! This module defines all the syntax used in the schematic file format that is not
@@ -115,7 +122,14 @@
 <span class="macro">untagged! </span>{
 	<span class="attribute">#[derive(Clone, Debug, PartialEq)]
 	</span><span class="kw">pub enum </span>SchematicContent {
-		Junction(Junction)
+		BusEntry(BusEntry),
+		Bus(Bus),
+		Junction(Junction),
+		Label(Label),
+		NoConnect(NoConnect),
+		Polyline(Polyline),
+		Text(Text),
+		Wire(Wire)
 	}
 }
 
