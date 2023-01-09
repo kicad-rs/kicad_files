@@ -47,7 +47,14 @@ impl Version {
 untagged! {
 	#[derive(Clone, Debug, PartialEq)]
 	pub enum SchematicContent {
-		Junction(Junction)
+		BusEntry(BusEntry),
+		Bus(Bus),
+		Junction(Junction),
+		Label(Label),
+		NoConnect(NoConnect),
+		Polyline(Polyline),
+		Text(Text),
+		Wire(Wire)
 	}
 }
 
