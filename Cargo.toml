@@ -13,6 +13,11 @@ keywords = ["s-expression", "s-expr", "kicad", "serde", "serialization"]
 
 repository = "https://github.com/kicad-rs/kicad_files"
 
+[[test]]
+name = "kicad_footprints"
+path = "tests/kicad_footprints.rs"
+harness = false
+
 [features]
 skip_nil_uuids = []
 
@@ -27,6 +32,8 @@ thiserror = "1.0"
 uuid = { version = "1.2.2", features = ["serde"] }
 
 [dev-dependencies]
+anyhow = "1.0"
+libtest = { package = "libtest-mimic", version = "0.7.3" }
 pretty_assertions = "1.0"
 serde_sexpr = { package = "serde_kicad_sexpr", version = "0.1", features = ["backtrace"] }
 termcolor = "1.1"
