@@ -39,6 +39,7 @@ pretty_assertions = "1.0"
 serde_sexpr = { package = "serde_kicad_sexpr", version = "0.1", features = ["backtrace"] }
 termcolor = "1.1"
 tokio = { version = "1.37", features = ["fs", "rt-multi-thread"] }
+tokio-stream = { version = "0.1.15", features = ["fs"] }
 
 [profile.test]
 opt-level = 3
