@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["board","Board Common Syntax"],["common","Common Syntax"],["schematic","Schematic File Format"],["symbol","Schematic and Symbol Library Common Syntax"],["symbol_lib","Symbol Library"]],"struct":[["deg",""],["mm",""]],"trait":[["Deg",""],["Unit",""]],"type":[["Color",""]]};
+window.SIDEBAR_ITEMS = {"mod":["board","common","schematic","symbol","symbol_lib"],"struct":["deg","mm"],"trait":["Deg","Unit"],"type":["Color"]};

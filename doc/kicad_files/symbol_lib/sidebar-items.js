@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["SymbolLib",""],["Version",""]]};
+window.SIDEBAR_ITEMS = {"struct":["SymbolLib","Version"]};
